@@ -27,16 +27,24 @@ function! noteworthy#File(...) abort
     let l:file = l:file . '.' . l:file_type
   endif
 
-  let l:title = toupper(join(split(fnamemodify(l:file, ':t:r'), '_'), ' '))
   let l:basedir = fnamemodify(l:file, ':h')
 
   if !isdirectory(l:basedir) | call mkdir(l:basedir, 'p') | endif
+  echo l:file
 
   execute 'edit' l:file
 
   if getfsize(l:file) > 0 | return | endif
 
-  call append(0, ["# " . l:title])
+  if exists('g:noteworthy_use_default_header') && g:noteworthy_use_default_header
+    let l:title = "# " . toupper(join(split(fnamemodify(l:file, ':t:r'), '_'), ' '))
+  elseif exists('g:noteworthy_header_command')
+    let l:title = eval(g:noteworthy_header_command)
+  else
+    return
+  endif
+
+  call append(0, [l:title])
 endfunction
 
 function! noteworthy#SetCurrentLibrary(library) abort

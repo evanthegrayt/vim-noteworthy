@@ -53,6 +53,32 @@ To change which library is being used, call `:NoteLibrary [library]`, where
 `library` is a key from `g:noteworthy_libraries`. Tab-completion will list
 available libraries.
 
+The plugin can generate a title for you. Set this in your `vimrc`.
+
+```vim
+let noteworthy_use_default_header = 1
+```
+
+Now if you call `:Note remember this`, a file called `remember_this.md` will be
+created, and will be given the following header.
+
+```markdown
+# REMEMBER THIS
+```
+
+If you want to define your own command, you can create a string containing
+commands to be `eval`'d and used as the header. For example, if you want the
+title to be lower-case instead of the default upper-case.
+
+```vim
+let g:noteworthy_header_command = 
+      \ "'# ' . join(split(fnamemodify(l:file, ':t:r'), '_'), ' ')"
+```
+
+Note that you can use `l:file`, which will resolve to the full file path to the
+current note being created.
+
+
 ## Installation
 This project is under construction. It's in a working order, but I haven't
 finished this README. I have, however, got some of the

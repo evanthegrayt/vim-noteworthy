@@ -55,7 +55,7 @@ The plugin can automatically generate a title for new notes. Set this in your
 `vimrc`.
 
 ```vim
-let noteworthy_use_default_header = 1
+let g:noteworthy_use_default_header = 1
 ```
 
 Now if you call `:Note remember this`, a file called `remember_this.md` will be
@@ -70,7 +70,7 @@ commands to be `eval`'d and used as the header. For example, if you want the
 title to be lower-case instead of the default upper-case.
 
 ```vim
-let g:noteworthy_header_command = "'# ' . l:title"
+let g:noteworthy_header_command = "'# ' . tolower(l:title)"
 ```
 
 This would make the header look like:
@@ -79,12 +79,13 @@ This would make the header look like:
 # remember this
 ```
 
-Note that you can use `l:file` and `l:title`, which will resolve to the full
-file path to the current note, and the base file name with extension removed and
-underscores replaced by spaces, respectively. In other words, if the current
-library is `/Users/me/notes`, and the note is `things_to_remember.md`, then
-`l:file` would resolve to `/Users/me/notes/things_to_remember.md`, and `l:title`
-would resolve to `things to remember`.
+Note that you have access to the variables `l:file` and `l:title`, which will
+resolve to the full file path to the current note, and the base file name,
+upper-case, with extension removed and underscores replaced by spaces,
+respectively. In other words, if the current library is `/Users/me/notes`, and
+the note is `things_to_remember.md`, then `l:file` would resolve to
+`/Users/me/notes/things_to_remember.md`, and `l:title` would resolve to `THINGS
+TO REMEMBER`.
 
 ### Commands
 Create or edit a note with `:Note [subject...]`. The `subject` will be used as

@@ -36,10 +36,10 @@ function! noteworthy#File(...) abort
   execute 'edit' l:file
 
   if getfsize(l:file) > 0 | return | endif
-  let l:title = substitute(fnamemodify(l:file, ':t:r'), '_', ' ', 'g')
+  let l:title = toupper(substitute(fnamemodify(l:file, ':t:r'), '_', ' ', 'g'))
 
   if exists('g:noteworthy_use_default_header') && g:noteworthy_use_default_header
-    let l:title = '# ' . toupper(l:title)
+    let l:title = '# ' . l:title
   elseif exists('g:noteworthy_header_command')
     let l:title = eval(g:noteworthy_header_command)
   else

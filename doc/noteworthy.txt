@@ -1,10 +1,32 @@
 *noteworthy.txt*  *noteworthy*
 
+================================================================================
+                  _  _     _                      _   _                        ~
+                 | \| |___| |_ _____ __ _____ _ _| |_| |_ _  _                 ~
+                 | .` / _ \  _/ -_) V  V / _ \ '_|  _| ' \ || |                ~
+                 |_|\_\___/\__\___|\_/\_/\___/_|  \__|_||_\_, |                ~
+                                                          |__/                 ~
+================================================================================
+
+TABLE OF CONTENTS                                               *noteworthy-toc*
+
+Setup ........................................ |noteworthy-setup|
+  Identifying your notes libraries ........... |g:noteworthy_libraries|
+  Setting a default library .................. |g:noteworthy_default_library|
+  Setting file type for notes ................ |g:noteworthy_file_type|
+  Using the default header ................... |g:noteworthy_use_default_header|
+  Setting a custom header .................... |g:noteworthy_header_command|
+Commands ..................................... |noteworthy-commands|
+  Create or open a note ...................... |Note|
+  List or change library ..................... |NoteLibrary|
+
+================================================================================
+
 SETUP                                                         *noteworthy-setup*
 
 The following values should be set in your vimrc file.
 
-                                                       *g:noteworthy_libraries* 
+                                                       *g:noteworthy_libraries*
 Identifying your notes libraries~
 
 Declare a dictionary with keys being the library name, and values being
@@ -15,31 +37,77 @@ absolute paths to the libraries.
           \   'personal': $HOME . '/workflow/notes/personal',
           \ }
 <
-                                                  *g:noteworthy_default_library* 
+                                                  *g:noteworthy_default_library*
 Setting a default library~
 
 Declare one of the keys from |g:noteworthy_libraries| as the default library.
+This is not required, but if not set, you will need to use |:NoteLibrary| to
+set the library every time you open a new vim instance.
 >
     let g:noteworthy_default_library = 'work'
 <
 
-                                                        *g:noteworthy_file_type* 
+                                                        *g:noteworthy_file_type*
 Setting file type fore notes~
 
-The default file type for notes is Markdown (md). This is customizable.
+The default file type for notes is Markdown (md). This is customizable. This
+should be the file extension, not file type.
 >
     let g:noteworthy_file_type = 'txt'
 <
 
-COMMANDS                                                   *noteworthy-commands*                                           
+                                               *g:noteworthy_use_default_header*
+Using the default header~
+
+The plugin can automatically generate a title for new notes. Set this in your
+vimrc.
+>
+    let g:noteworthy_use_default_header = 1
+<
+
+Now if you call `:Note remember this`, a file called `remember_this.md` will be
+created, and will be given the following header.
+>
+    # REMEMBER THIS
+<
+
+                                                   *g:noteworthy_header_command*
+Setting a custom header~
+
+If you want to define your own command, you can create a string containing
+commands to be parsed by |eval()| and used as the header. For example, if you
+want the title to be lower-case instead of the default upper-case.
+>
+    let g:noteworthy_header_command = "'# ' . tolower(l:title)"
+<
+
+This would make the header look like:
+>
+    # remember this
+<
+
+Note that you have access to the variables "l:file" and "l:title", which will
+resolve to the full file path to the current note, and the base file name,
+upper-case, with extension removed and underscores replaced by spaces,
+respectively.
+
+In other words, if the current library is "/Users/me/notes", and the note is
+"things_to_remember.md", then "l:file" would resolve to
+"/Users/me/notes/things_to_remember.md", and "l:title" would resolve to "THINGS
+TO REMEMBER".
+
+================================================================================
+
+COMMANDS                                                   *noteworthy-commands*
 
                                                                   *Note* *:Note*
-:Note {topic [, ...]}      Create new {topic} markdown file in the
+:Note {topic} [{, ...}]    Create new {topic} markdown file in the
                            |b:noteworthy_current_library|, or open it if it
                            already exists. The file extension can be omitted.
                            Can be multiple words separated by spaces, which
                            will be replaced by underscores in the file name.
 
-:NoteLibrary [{library}]   If {library} is provided, and is a key of
-                           |g:noteworthy_libraries|, switch to {library}. If
-                           {library} is not passed, 'echo' the current library.
+                                                    *NoteLibrary* *:NoteLibrary*
+:NoteLibrary [{library}]   Show the library currently in use. If {library} is
+                           provided, and is a key of |g:noteworthy_libraries|,
+                           switch to {library}.

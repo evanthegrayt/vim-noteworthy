@@ -1,3 +1,45 @@
-*noteworthy.txt*
+*noteworthy.txt*  *noteworthy*
 
-COMING SOON                                                         *noteworthy*
+SETUP                                                         *noteworthy-setup*
+
+The following values should be set in your vimrc file.
+
+                                                       *g:noteworthy_libraries* 
+Identifying your notes libraries~
+
+Declare a dictionary with keys being the library name, and values being
+absolute paths to the libraries.
+>
+    let g:noteworthy_libraries = {
+          \   'work':     $HOME . '/workflow/notes/work',
+          \   'personal': $HOME . '/workflow/notes/personal',
+          \ }
+<
+                                                  *g:noteworthy_default_library* 
+Setting a default library~
+
+Declare one of the keys from |g:noteworthy_libraries| as the default library.
+>
+    let g:noteworthy_default_library = 'work'
+<
+
+                                                        *g:noteworthy_file_type* 
+Setting file type fore notes~
+
+The default file type for notes is Markdown (md). This is customizable.
+>
+    let g:noteworthy_file_type = 'txt'
+<
+
+COMMANDS                                                   *noteworthy-commands*                                           
+
+                                                                  *Note* *:Note*
+:Note {topic [, ...]}      Create new {topic} markdown file in the
+                           |b:noteworthy_current_library|, or open it if it
+                           already exists. The file extension can be omitted.
+                           Can be multiple words separated by spaces, which
+                           will be replaced by underscores in the file name.
+
+:NoteLibrary [{library}]   If {library} is provided, and is a key of
+                           |g:noteworthy_libraries|, switch to {library}. If
+                           {library} is not passed, 'echo' the current library.

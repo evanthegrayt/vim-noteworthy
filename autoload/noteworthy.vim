@@ -1,15 +1,13 @@
-"TODO Add switch library like how ps switches databases
-
 ""
 " The current library in use.
 function! noteworthy#GetCurrentLibrary()
   if !exists('g:noteworthy_libraries')
-    call s:Warn("'g:noteworthy_libraries' no set!")
+    call s:Error("'g:noteworthy_libraries' no set!")
     return 0
   elseif exists('g:noteworthy_current_library')
     let l:dir = g:noteworthy_libraries[g:noteworthy_current_library]
   elseif !exists('g:noteworthy_default_library')
-    call s:Warn("'g:noteworthy_default_library' not set! " .
+    call s:Error("'g:noteworthy_default_library' not set! " .
           \ 'Set in vimrc or use :NoteLibrary [LIBRARY]')
     return 0
   else
@@ -36,10 +34,10 @@ function! noteworthy#File(...) abort
   execute 'edit' l:file
 
   if getfsize(l:file) > 0 | return | endif
-  let l:title = toupper(substitute(fnamemodify(l:file, ':t:r'), '_', ' ', 'g'))
+  let l:title = substitute(fnamemodify(l:file, ':t:r'), '_', ' ', 'g')
 
   if exists('g:noteworthy_use_default_header') && g:noteworthy_use_default_header
-    let l:title = '# ' . l:title
+    let l:title = '# ' . substitute(l:title, '\<.', '\u&', 'g')
   elseif exists('g:noteworthy_header_command')
     let l:title = eval(g:noteworthy_header_command)
   else
@@ -51,7 +49,7 @@ endfunction
 
 function! noteworthy#SetCurrentLibrary(library) abort
   if !has_key(g:noteworthy_libraries, a:library)
-    s:Warn('Key [' . a:library . '] does not exist!')
+    s:Error('Key [' . a:library . '] does not exist!')
     return 0
   endif
 
@@ -89,6 +87,10 @@ endfunction
 " PRIVATE API
 
 function! s:Warn(msg) abort
+  echohl WarningMsg | echomsg 'NoteWorthy: ' . a:message | echohl None
+endfunction
+
+function! s:Error(msg) abort
   echohl ErrorMsg | echomsg 'NoteWorthy: ' . a:message | echohl None
 endfunction
 

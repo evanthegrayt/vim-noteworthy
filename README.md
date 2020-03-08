@@ -1,5 +1,5 @@
 # Noteworthy
-Very often, I'll be coding in vim, and want to jot down a reminder. I have
+Very often, I'll be coding in `vim`, and want to quickly write a note. I have
 places where I store notes for myself, and it's not usually in the same
 repository I'm coding in. I made this plugin to make this process easier.
 
@@ -8,6 +8,7 @@ repository I'm coding in. I made this plugin to make this process easier.
 - [Usage](#usage)
   - [Setup](#setup)
   - [Commands](#commands)
+- [Issues and Feature Requests](#issues-and-feature-requests)
 - [Self-Promotion](#self-promotion)
 
 ## Installation
@@ -62,30 +63,30 @@ Now if you call `:Note remember this`, a file called `remember_this.md` will be
 created, and will be given the following header.
 
 ```markdown
-# REMEMBER THIS
+# Remember This
 ```
 
-If you want to define your own command, you can create a string containing
-commands to be `eval`'d and used as the header. For example, if you want the
-title to be lower-case instead of the default upper-case.
+If you want to define your own header-making command, you can create a string
+containing commands to be `eval`'d and used as the header. For example, if you
+want the title to be all upper-case instead of the default upper-case.
 
 ```vim
-let g:noteworthy_header_command = "'# ' . tolower(l:title)"
+let g:noteworthy_header_command = "'# ' . toupper(l:title)"
 ```
 
 This would make the header look like:
 
 ```markdown
-# remember this
+# REMEMBER THIS
 ```
 
 Note that you have access to the variables `l:file` and `l:title`, which will
-resolve to the full file path to the current note, and the base file name,
-upper-case, with extension removed and underscores replaced by spaces,
-respectively. In other words, if the current library is `/Users/me/notes`, and
-the note is `things_to_remember.md`, then `l:file` would resolve to
-`/Users/me/notes/things_to_remember.md`, and `l:title` would resolve to `THINGS
-TO REMEMBER`.
+resolve to the full file path to the current note, and the base file name with
+any extension removed and underscores replaced by spaces, respectively. In other
+words, if the current library is `/Users/me/notes`, and the note is
+`things_to_remember.md`, then `l:file` would resolve to
+`/Users/me/notes/things_to_remember.md`, and `l:title` would resolve to `things
+to remember`.
 
 ### Commands
 Create or edit a note with `:Note [subject...]`. The `subject` will be used as
@@ -119,6 +120,16 @@ To see which library is currently in use, call `:NoteLibrary`.
 To change which library is being used, call `:NoteLibrary [library]`, where
 `library` is a key from `g:noteworthy_libraries`. Tab-completion will list
 available libraries.
+
+## Issues and Feature Requests
+This is a new project, and isn't feature-rich yet. I plan on doing a lot with
+this plugin, so check the [issue
+list](https://github.com/evanthegrayt/vim-noteworthy/issues) to see my ideas for
+the future of it. Comments and feedback are more than welcome on the issues.
+
+If you don't like a behavior, or would like a feature added, feel free to
+[create an issue](https://github.com/evanthegrayt/vim-noteworthy/issues/new).
+Just make sure the topic doesn't already exist.
 
 ## Self-Promotion
 I do these projects for fun, and I enjoy knowing that they're helpful to people.

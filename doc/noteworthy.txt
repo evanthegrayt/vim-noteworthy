@@ -1,11 +1,21 @@
 *noteworthy.txt*  *noteworthy*
-
 ================================================================================
                   _  _     _                      _   _                        ~
                  | \| |___| |_ _____ __ _____ _ _| |_| |_ _  _                 ~
                  | .` / _ \  _/ -_) V  V / _ \ '_|  _| ' \ || |                ~
                  |_|\_\___/\__\___|\_/\_/\___/_|  \__|_||_\_, |                ~
                                                           |__/                 ~
+================================================================================
+
+ABOUT                                                         *noteworthy-about*
+
+Plugin for vim that allows you to easily create or open a note in specified
+libraries.
+
+Author:  Evan Gray <mailto:evanthegrayt@vivaldi.net>
+Repo:    https://github.com/evanthegrayt/vim-noteworthy
+License: MIT License
+
 ================================================================================
 
 TABLE OF CONTENTS                                               *noteworthy-toc*
@@ -65,10 +75,10 @@ vimrc.
     let g:noteworthy_use_default_header = 1
 <
 
-Now if you call `:Note remember this`, a file called `remember_this.md` will be
-created, and will be given the following header.
+Now if you call |:Note| and pass "remember this" as paramters, a file called
+"remember_this.md" will be created, and will be given the following header.
 >
-    # REMEMBER THIS
+    # Remember This
 <
 
                                                    *g:noteworthy_header_command*
@@ -76,25 +86,24 @@ Setting a custom header~
 
 If you want to define your own command, you can create a string containing
 commands to be parsed by |eval()| and used as the header. For example, if you
-want the title to be lower-case instead of the default upper-case.
+want the title to be upper-case instead of the default upper-case.
 >
-    let g:noteworthy_header_command = "'# ' . tolower(l:title)"
+    let g:noteworthy_header_command = "'# ' . toupper(l:title)"
 <
 
 This would make the header look like:
 >
-    # remember this
+    # REMEMBER THIS
 <
 
 Note that you have access to the variables "l:file" and "l:title", which will
-resolve to the full file path to the current note, and the base file name,
-upper-case, with extension removed and underscores replaced by spaces,
-respectively.
+resolve to the full file path to the current note, and the base file name with
+any extension removed and underscores replaced by spaces, respectively.
 
 In other words, if the current library is "/Users/me/notes", and the note is
 "things_to_remember.md", then "l:file" would resolve to
-"/Users/me/notes/things_to_remember.md", and "l:title" would resolve to "THINGS
-TO REMEMBER".
+"/Users/me/notes/things_to_remember.md", and "l:title" would resolve to "things
+to remember".
 
 ================================================================================
 

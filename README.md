@@ -1,2 +1,2 @@
 # vim-noteworthy
-Plugin note taking in vim. Under Construction.
+Plugin that assists with note-taking in vim. Under Construction.

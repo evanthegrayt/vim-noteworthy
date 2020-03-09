@@ -104,11 +104,10 @@ Any one of the above commands will open a file in your current library called
 library.
 
 You can also use subdirectories, and they will be created if they don't exist.
-Just make sure your first argument has a slash in it.
 
 ```
-:Note rails/remember this about rails
-:Note rails/remember_this_about_rails
+:Note rails / remember this about rails
+:Note rails/ remember_this_about_rails
 :Note rails/remember_this_about_rails.md
 ```
 

@@ -23,7 +23,7 @@ endfunction
 function! noteworthy#File(...) abort
   let l:dir = noteworthy#GetCurrentLibrary()
   let l:file_type = s:GetNoteFileType()
-  let l:file = l:dir . tolower(join(a:000, '_'))
+  let l:file = l:dir . substitute(tolower(join(a:000, '_')), "_*\/_*", "/", 'g')
 
   if l:file !~#  '\.' . l:file_type . '$'
     let l:file = l:file . '.' . l:file_type

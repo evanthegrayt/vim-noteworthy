@@ -43,8 +43,8 @@ Declare a dictionary with keys being the library name, and values being
 absolute paths to the libraries.
 >
     let g:noteworthy_libraries = {
-          \   'work':     $HOME . '/workflow/notes/work',
-          \   'personal': $HOME . '/workflow/notes/personal',
+          \   'general':    $HOME . '/notes',
+          \   'my_project': $HOME . '/my_project/docs/notes',
           \ }
 <
                                                   *g:noteworthy_default_library*

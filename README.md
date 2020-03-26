@@ -38,11 +38,11 @@ instance.
 
 ```vim
 let g:noteworthy_libraries = {
-      \   'work':     $HOME . '/workflow/notes/work',
-      \   'personal': $HOME . '/workflow/notes/personal',
-      \ }
+    \   'general':    $HOME . '/notes',
+    \   'my_project': $HOME . '/my_project/docs/notes',
+    \ }
 
-let g:noteworthy_default_library = 'work'
+let g:noteworthy_default_library = 'general'
 ```
 
 The default file extension is 'md' (markdown), but you can change this. Note

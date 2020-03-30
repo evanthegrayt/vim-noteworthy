@@ -1,7 +1,7 @@
 # Noteworthy
-Very often, I'll be coding in `vim`, and want to quickly write a note. I have
-places where I store notes for myself, and it's not usually in the same
-repository I'm coding in. I made this plugin to make this process easier.
+I'll often be coding in `vim`, and want to quickly write a note. I have places
+where I store notes for myself, and it's not usually in the same repository I'm
+coding in. I made this plugin to make this process easier.
 
 ## Table of Contents
 - [Installation](#installation)
@@ -49,7 +49,7 @@ The default file extension is 'md' (markdown), but you can change this. Note
 that this should be the file *extension* (without the dot), not the file *type*.
 
 ```vim
-let g:noteworthy_file_type = 'txt'
+let g:noteworthy_file_ext = 'txt'
 ```
 
 The plugin can automatically generate a title for new notes. Set this in your

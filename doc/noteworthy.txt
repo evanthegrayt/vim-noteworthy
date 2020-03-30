@@ -23,7 +23,7 @@ TABLE OF CONTENTS                                               *noteworthy-toc*
 Setup ........................................ |noteworthy-setup|
   Identifying your notes libraries ........... |g:noteworthy_libraries|
   Setting a default library .................. |g:noteworthy_default_library|
-  Setting file type for notes ................ |g:noteworthy_file_type|
+  Setting file type for notes ................ |g:noteworthy_file_ext|
   Using the default header ................... |g:noteworthy_use_default_header|
   Setting a custom header .................... |g:noteworthy_header_command|
 Commands ..................................... |noteworthy-commands|
@@ -57,13 +57,13 @@ set the library every time you open a new vim instance.
     let g:noteworthy_default_library = 'work'
 <
 
-                                                        *g:noteworthy_file_type*
+                                                         *g:noteworthy_file_ext*
 Setting file type fore notes~
 
 The default file type for notes is Markdown (md). This is customizable. This
 should be the file extension, not file type.
 >
-    let g:noteworthy_file_type = 'txt'
+    let g:noteworthy_file_ext = 'txt'
 <
 
                                                *g:noteworthy_use_default_header*

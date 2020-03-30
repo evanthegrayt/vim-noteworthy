@@ -22,11 +22,11 @@ endfunction
 " Create or open a note in the current library.
 function! noteworthy#File(...) abort
   let l:dir = noteworthy#GetCurrentLibrary()
-  let l:file_type = s:GetNoteFileType()
+  let l:file_ext = s:GetNoteFileExt()
   let l:file = l:dir . substitute(tolower(join(a:000, '_')), "_*\/_*", "/", 'g')
 
-  if l:file !~#  '\.' . l:file_type . '$'
-    let l:file = l:file . '.' . l:file_type
+  if l:file !~#  '\.' . l:file_ext . '$'
+    let l:file = l:file . '.' . l:file_ext
   endif
 
   let l:basedir = fnamemodify(l:file, ':h')
@@ -58,14 +58,15 @@ function! noteworthy#SetCurrentLibrary(library) abort
 endfunction
 
 function! noteworthy#Completion(arg_lead, cmd_line, cursor_pos) abort
+  let l:file_ext = s:GetNoteFileExt(1)
   let l:dir = noteworthy#GetCurrentLibrary()
 
   if !isdirectory(l:dir) | return '' | endif
 
   let l:olddir = chdir(l:dir)
-  let l:list = glob('**/*.md', 0, 1)
-
+  let l:list = glob('**/*.' . l:file_ext, 0, 1)
   call chdir(l:olddir)
+
   return join(l:list, "\n")
 endfunction
 
@@ -86,16 +87,31 @@ endfunction
 
 " PRIVATE API
 
-function! s:Warn(msg) abort
-  echohl WarningMsg | echomsg 'NoteWorthy: ' . a:message | echohl None
+function! s:Warn(message) abort
+  echohl WarningMsg | echomsg 'Noteworthy: ' . a:message | echohl None
 endfunction
 
-function! s:Error(msg) abort
-  echohl ErrorMsg | echomsg 'NoteWorthy: ' . a:message | echohl None
+function! s:Error(message) abort
+  echohl ErrorMsg | echomsg 'Noteworthy: ' . a:message | echohl None
 endfunction
 
-function! s:GetNoteFileType() abort
-  if exists('g:noteworthy_file_type') | return g:noteworthy_file_type | endif
+function! s:GetNoteFileExt(...) abort
+  if a:0
+    let l:silence = a:1
+  else
+    let l:silence = 0
+  endif
+
+  if exists('g:noteworthy_file_ext')
+    return g:noteworthy_file_ext
+  elseif exists('g:noteworthy_file_type')
+    if !l:silence
+      call s:Warn(
+            \   'g:noteworthy_file_type is deprecated for g:noteworthy_file_ext'
+            \ )
+    endif
+    return g:noteworthy_file_type
+  endif
 
   return 'md'
 endfunction

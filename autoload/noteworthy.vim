@@ -16,13 +16,12 @@ function! noteworthy#File(...) abort
   if getfsize(l:file) > 0 | return | endif
   let l:title = substitute(fnamemodify(l:file, ':t:r'), '_', ' ', 'g')
 
-  if exists('g:noteworthy_use_default_header') && g:noteworthy_use_default_header
-    " Upcase first letter of every word in the string.
-    let l:title = '# ' . substitute(l:title, '\<.', '\u&', 'g')
+  if exists('g:noteworthy_use_header') && !g:noteworthy_use_header
+    return
   elseif exists('g:noteworthy_header_command')
     let l:title = eval(g:noteworthy_header_command)
   else
-    return
+    let l:title = '# ' . substitute(l:title, '\<.', '\u&', 'g')
   endif
 
   call append(0, [l:title])

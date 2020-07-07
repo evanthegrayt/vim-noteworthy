@@ -7,7 +7,13 @@ coding in. I made this plugin to make this process easier.
 - [Installation](#installation)
 - [Usage](#usage)
   - [Setup](#setup)
+    - [Defining library locations](#defining-library-locations)
+    - [Header generation](#header-generation)
+    - [Custom header](#custom-header)
+    - [Changing the file type](#changing-the-file-type)
   - [Commands](#commands)
+    - [Create or edit a note](#create-or-edit-a-note)
+    - [Listing and changing libraries](#listing-and-changing-libraries)
 - [Issues and Feature Requests](#issues-and-feature-requests)
 - [Self-Promotion](#self-promotion)
 
@@ -31,6 +37,7 @@ Generate and view the help from within vim.
 
 ## Usage
 ### Setup
+#### Defining library locations
 To get started, define a dictionary of libraries and their file paths in your
 `vimrc`, and tell it which is the default to use. If a default is not set, you
 will have to tell it which library to use each time you open a new `vim`
@@ -45,33 +52,28 @@ let g:noteworthy_libraries = {
 let g:noteworthy_default_library = 'general'
 ```
 
-The default file extension is 'md' (markdown), but you can change this. Note
-that this should be the file *extension* (without the dot), not the file *type*.
-
-```vim
-let g:noteworthy_file_ext = 'txt'
-```
-
-The plugin can automatically generate a title for new notes. Set this in your
-`vimrc`.
-
-```vim
-let g:noteworthy_use_default_header = 1
-```
-
-Now if you call `:Note remember this`, a file called `remember_this.md` will be
-created, and will be given the following header.
+#### Header generation
+The plugin can automatically generate a title for new notes. If you call `:Note
+remember this`, a file called `remember_this.md` will be created, and will be
+given the following header.
 
 ```markdown
 # Remember This
 ```
 
+To disable the header generation, set this in your `vimrc`.
+
+```vim
+let g:noteworthy_use_header = 0
+```
+
+#### Custom header
 If you want to define your own header-making command, you can create a string
 containing commands to be `eval`'d and used as the header. For example, if you
 want the title to be all upper-case instead of the default upper-case.
 
 ```vim
-let g:noteworthy_header_command = "'# ' . toupper(l:title)"
+let g:noteworthy_header_command = "'# ' . toupper(title)"
 ```
 
 This would make the header look like:
@@ -80,15 +82,25 @@ This would make the header look like:
 # REMEMBER THIS
 ```
 
-Note that you have access to the variables `l:file` and `l:title`, which will
+Note that you have access to the variables `file` and `title`, which will
 resolve to the full file path to the current note, and the base file name with
 any extension removed and underscores replaced by spaces, respectively. In other
 words, if the current library is `/Users/me/notes`, and the note is
-`things_to_remember.md`, then `l:file` would resolve to
-`/Users/me/notes/things_to_remember.md`, and `l:title` would resolve to `things
+`things_to_remember.md`, then `file` would resolve to
+`/Users/me/notes/things_to_remember.md`, and `title` would resolve to `things
 to remember`.
 
+#### Changing the file type
+
+The default file extension is 'md' (markdown), but you can change this. Note
+that this should be the file *extension* (without the dot), not the file *type*.
+
+```vim
+let g:noteworthy_file_ext = 'txt'
+```
+
 ### Commands
+#### Create or edit a note
 Create or edit a note with `:Note [subject...]`. The `subject` will be used as
 the file name, and any spaces will be replaced by underscores. No file extension
 is required.
@@ -114,6 +126,7 @@ You can also use subdirectories, and they will be created if they don't exist.
 Any one of the above commands will open a file called
 `rails/remember_this_about_rails.md` in your current library.
 
+#### Listing and changing libraries
 To see which library is currently in use, call `:NoteLibrary`.
 
 To change which library is being used, call `:NoteLibrary [library]`, where

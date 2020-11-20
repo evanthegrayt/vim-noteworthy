@@ -20,15 +20,22 @@ License: MIT License
 
 TABLE OF CONTENTS                                               *noteworthy-toc*
 
-Setup ........................................ |noteworthy-setup|
-  Identifying your notes libraries ........... |g:noteworthy_libraries|
-  Setting a default library .................. |g:noteworthy_default_library|
-  Setting file type for notes ................ |g:noteworthy_file_ext|
-  Using the default header ................... |g:noteworthy_use_header|
-  Setting a custom header .................... |g:noteworthy_header_command|
-Commands ..................................... |noteworthy-commands|
-  Create or open a note ...................... |Note|
-  List or change library ..................... |NoteLibrary|
+Setup ........................................... |noteworthy-setup|
+  Identifying your notes libraries .............. |g:noteworthy_libraries|
+  Setting a default library ..................... |g:noteworthy_default_library|
+  Setting file extension for notes .............. |g:noteworthy_file_ext|
+  Using the default header ...................... |g:noteworthy_use_header|
+  Setting a custom header ....................... |g:noteworthy_header_command|
+  Allow any file extension in tab completion .... |g:noteworthy_ambiguous|
+Commands ........................................ |noteworthy-commands|
+  Create or open a note ......................... |Note|
+  Create or open a note in a split .............. |Snote|
+  Create or open a note in a vertical split ..... |Vnote|
+  Create or open a note in a new tab ............ |Tnote|
+  List or change library ........................ |NoteLibrary|
+  List or change the file extension being used .. |NoteExtension|
+  Allow any file extension in tab completion .... |NoteAmbiguousEnable|
+  Disallow any file extension in tab completion . |NoteAmbiguousDisable|
 
 ================================================================================
 
@@ -58,10 +65,10 @@ set the library every time you open a new vim instance.
 <
 
                                                          *g:noteworthy_file_ext*
-Setting file type fore notes~
+Setting file extension for notes~
 
-The default file type for notes is Markdown (md). This is customizable. This
-should be the file extension, not file type.
+The default file extension for notes is Markdown (md). This is customizable.
+This should be the file extension, not file type.
 >
     let g:noteworthy_file_ext = 'txt'
 <
@@ -105,6 +112,18 @@ In other words, if the current library is "/Users/me/notes", and the note is
 "/Users/me/notes/things_to_remember.md", and "title" would resolve to "things
 to remember".
 
+                                                        *g:noteworthy_ambiguous*
+Allow any file extension in tab completion~
+
+The default glob for tab-completion is "*.ext", where "ext" is the result of
+|g:noteworthy_file_ext|. To change the glob to "*.*" (any file extension), set
+the following in your vimrc. Note that this does not affect
+|g:noteworthy_file_ext|, only the tab-completion results.
+
+>
+    let g:noteworthy_ambiguous = 1
+<
+
 ================================================================================
 
 COMMANDS                                                   *noteworthy-commands*
@@ -116,7 +135,42 @@ COMMANDS                                                   *noteworthy-commands*
                            Can be multiple words separated by spaces, which
                            will be replaced by underscores in the file name.
 
+                                                                *Snote* *:Snote*
+:Snote {topic} [{, ...}]   Same as |Note|, but opens in a split.
+
+                                                                *Vnote* *:Vnote*
+:Vnote {topic} [{, ...}]   Same as |Note|, but opens in a vertical split.
+
+                                                                *Tnote* *:Tnote*
+:Tnote {topic} [{, ...}]   Same as |Note|, but opens in new tab.
+
                                                     *NoteLibrary* *:NoteLibrary*
-:NoteLibrary [{library}]   Show the library currently in use. If {library} is
-                           provided, and is a key of |g:noteworthy_libraries|,
-                           switch to {library}.
+:NoteLibrary [{library}]   Switch to {library}, which should be a key of
+                           |g:noteworthy_libraries|. If {library} is not
+                           provided, the current library being used will be
+                           displayed.
+
+                                                *NoteExtension* *:NoteExtension*
+:NoteExtension [{ext}]     Change the file extension being used when creating a
+                           new note or using tab-completion to {ext}. If {ext}
+                           is not provided, the current extension being used
+                           will be displayed.
+
+                                    *NoteAmbiguousEnable* *:NoteAmbiguousEnable*
+:NoteAmbiguousEnable       Allow any file extension in tab completion. 
+
+                                  *NoteAmbiguousDisable* *:NoteAmbiguousDisable*
+:NoteAmbiguousDisable      Disallow any file extension in tab completion.
+
+================================================================================
+
+TIPS AND RECOMMENDED PLUGINS  *noteworthy-tips* *noteworthy-recommended-plugins*
+
+If you have a lot of notes, you can use vim's built-in way to show all available
+completions at once. You can trigger this by hitting <c-d> from command-line
+mode.
+
+If you're using Markdown as your primary file type (as is the default), I
+recommend using the Tagbar (https://github.com/preservim/tagbar) plugin with
+Tagbar Markdown (https://github.com/lvht/tagbar-markdown). This indexes the
+page by headers, and makes it much easier to navigate large note files.

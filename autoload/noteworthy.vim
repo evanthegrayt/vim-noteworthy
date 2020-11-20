@@ -89,7 +89,6 @@ function! s:SetCurrentLibrary(library) abort
     s:Error('Key [' . a:library . '] does not exist!')
     return 0
   endif
-
   let g:noteworthy_current_library = a:library
   return 1
 endfunction

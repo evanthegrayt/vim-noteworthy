@@ -10,10 +10,13 @@ coding in. I made this plugin to make this process easier.
     - [Defining library locations](#defining-library-locations)
     - [Header generation](#header-generation)
     - [Custom header](#custom-header)
-    - [Changing the file type](#changing-the-file-type)
+    - [Changing the default file extension](#changing-the-default-file-extension)
   - [Commands](#commands)
     - [Create or edit a note](#create-or-edit-a-note)
     - [Listing and changing libraries](#listing-and-changing-libraries)
+    - [Changing the file extension](#changing-the-file-extension)
+    - [Changing tab-completion globbing](#changing-tab-completion-globbing)
+  - [Tips and recommended plugins](#tips-and-recommended-plugins)
 - [Issues and Feature Requests](#issues-and-feature-requests)
 - [Self-Promotion](#self-promotion)
 
@@ -45,11 +48,11 @@ instance.
 
 ```vim
 let g:noteworthy_libraries = {
-    \   'general':    $HOME . '/notes',
-    \   'my_project': $HOME . '/my_project/docs/notes',
+    \   'personal': $HOME . '/notes',
+    \   'work':     $HOME . '/my_project/docs/notes',
     \ }
 
-let g:noteworthy_default_library = 'general'
+let g:noteworthy_default_library = 'personal'
 ```
 
 #### Header generation
@@ -90,13 +93,23 @@ words, if the current library is `/Users/me/notes`, and the note is
 `/Users/me/notes/things_to_remember.md`, and `title` would resolve to `things
 to remember`.
 
-#### Changing the file type
+#### Changing the default file extension
 
 The default file extension is 'md' (markdown), but you can change this. Note
 that this should be the file *extension* (without the dot), not the file *type*.
 
 ```vim
 let g:noteworthy_file_ext = 'txt'
+```
+
+#### Allow any file extension in tab-completion
+The default glob for tab-completion is `*.ext`, where `ext` is the result of
+`g:noteworthy_file_ext`. To change the glob to `*.*` (any file extension), set
+the following in your `vimrc`. Note that this does not affect
+`g:noteworthy_file_ext`, *only* the tab-completion results.
+
+```vim
+let g:noteworthy_ambiguous = 1
 ```
 
 ### Commands
@@ -126,12 +139,47 @@ You can also use subdirectories, and they will be created if they don't exist.
 Any one of the above commands will open a file called
 `rails/remember_this_about_rails.md` in your current library.
 
+Note that `:Snote`, `:Vnote`, and `:Tnote` commands also exist. They behave the
+same as `:Note`, except they open the note in a split, vertical split, and new
+tab, respectively.
+
 #### Listing and changing libraries
 To see which library is currently in use, call `:NoteLibrary`.
 
 To change which library is being used, call `:NoteLibrary [library]`, where
 `library` is a key from `g:noteworthy_libraries`. Tab-completion will list
 available libraries.
+
+```
+:NoteLibrary work
+```
+
+#### Changing the file extension
+To change the file extension being used for note creation and tab-completion
+globbing, call `:NoteExtension` and pass it the extension you'd like to use. If
+no argument is passed, will display the current extension being used.
+
+```
+:NoteExtension txt
+```
+
+#### Changing tab-completion globbing
+Commands are provided for changing the value of `g:noteworthy_ambiguous`.
+
+```
+:NoteAmbiguousEnable
+:NoteAmbiguousDisable
+```
+
+### Tips and recommended plugins
+If you have a lot of notes, you can use vim's built-in way to show all available
+completions at once. You can trigger this by hitting `<c-d>` from command-line
+mode.
+
+If you're using Markdown as your primary file type (as is the default), I
+recommend using the [Tagbar](https://github.com/preservim/tagbar) plugin with
+[Tagbar Markdown](https://github.com/lvht/tagbar-markdown). This indexes the
+page by headers, and makes it much easier to navigate large note files.
 
 ## Issues and Feature Requests
 This is a new project, and isn't feature-rich yet. I plan on doing a lot with

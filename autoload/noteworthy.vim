@@ -1,30 +1,17 @@
-""
-" Create or open a note in the current library.
-function! noteworthy#File(...) abort
-  let l:dir = s:GetCurrentLibrary()
-  let l:file_ext = s:GetNoteFileExt()
-  let l:file = l:dir . substitute(tolower(join(a:000, '_')), "_*\/_*", "/", 'g')
+function! noteworthy#Note(...) abort
+  call s:File('edit', a:000)
+endfunction
 
-  if l:file !~#  '\.' . l:file_ext . '$'
-    let l:file = l:file . '.' . l:file_ext
-  endif
+function! noteworthy#Tnote(...) abort
+  call s:File('tabe', a:000)
+endfunction
 
-  let l:basedir = fnamemodify(l:file, ':h')
-  if !isdirectory(l:basedir) | call mkdir(l:basedir, 'p') | endif
-  execute 'edit' l:file
+function! noteworthy#Snote(...) abort
+  call s:File('split', a:000)
+endfunction
 
-  if getfsize(l:file) > 0 | return | endif
-  let l:title = substitute(fnamemodify(l:file, ':t:r'), '_', ' ', 'g')
-
-  if exists('g:noteworthy_use_header') && !g:noteworthy_use_header
-    return
-  elseif exists('g:noteworthy_header_command')
-    let l:title = eval(g:noteworthy_header_command)
-  else
-    let l:title = '# ' . substitute(l:title, '\<.', '\u&', 'g')
-  endif
-
-  call append(0, [l:title])
+function! noteworthy#Vnote(...) abort
+  call s:File('vert split', a:000)
 endfunction
 
 ""
@@ -50,7 +37,7 @@ endfunction
 ""
 " Completion for :Note.
 function! noteworthy#Completion(arg_lead, cmd_line, cursor_pos) abort
-  let l:file_ext = s:GetNoteFileExt(1)
+  let l:file_ext = get(g:, 'noteworthy_ambiguous', 0) ? '*' : s:GetNoteFileExt(1)
   let l:dir = s:GetCurrentLibrary()
 
   if !isdirectory(l:dir) | return '' | endif
@@ -60,6 +47,14 @@ function! noteworthy#Completion(arg_lead, cmd_line, cursor_pos) abort
   call chdir(l:olddir)
 
   return join(l:list, "\n")
+endfunction
+
+function! noteworthy#Extension(...) abort
+  if a:0
+    let g:noteworthy_file_ext = a:1
+  else
+    echo get(g:, 'noteworthy_file_ext', s:GetNoteFileExt())
+  endif
 endfunction
 
 " PRIVATE API
@@ -99,22 +94,7 @@ endfunction
 ""
 " Determines the file extension for notes.
 function! s:GetNoteFileExt(...) abort
-  if a:0
-    let l:silence = a:1
-  else
-    let l:silence = 0
-  endif
-
-  if exists('g:noteworthy_file_ext')
-    return g:noteworthy_file_ext
-  elseif exists('g:noteworthy_file_type')
-    if !l:silence
-      call s:Deprecated('g:noteworthy_file_type', 'g:noteworthy_file_ext')
-    endif
-    return g:noteworthy_file_type
-  endif
-
-  return 'md'
+  return get(g:, 'noteworthy_file_ext', 'md')
 endfunction
 
 function s:Deprecated(from, to) abort
@@ -127,4 +107,33 @@ endfunction
 
 function! s:Error(message) abort
   echohl ErrorMsg | echo 'Noteworthy: ' . a:message | echohl None
+endfunction
+
+""
+" Create or open a note in the current library.
+function! s:File(command, segments) abort
+  let l:dir = s:GetCurrentLibrary()
+  let l:file_ext = s:GetNoteFileExt()
+  let l:file = l:dir . substitute(tolower(join(a:segments, '_')), "_*\/_*", "/", 'g')
+
+  if l:file !~#  '\.' . l:file_ext . '$'
+    let l:file = l:file . '.' . l:file_ext
+  endif
+
+  let l:basedir = fnamemodify(l:file, ':h')
+  if !isdirectory(l:basedir) | call mkdir(l:basedir, 'p') | endif
+  execute a:command l:file
+
+  if getfsize(l:file) > 0 | return | endif
+  let l:title = substitute(fnamemodify(l:file, ':t:r'), '_', ' ', 'g')
+
+  if exists('g:noteworthy_use_header') && !g:noteworthy_use_header
+    return
+  elseif exists('g:noteworthy_header_command')
+    let l:title = eval(g:noteworthy_header_command)
+  else
+    let l:title = '# ' . substitute(l:title, '\<.', '\u&', 'g')
+  endif
+
+  call append(0, [l:title])
 endfunction

@@ -27,6 +27,7 @@ Setup ........................................... |noteworthy-setup|
   Using the default header ...................... |g:noteworthy_use_header|
   Setting a custom header ....................... |g:noteworthy_header_command|
   Allow any file extension in tab completion .... |g:noteworthy_ambiguous|
+  Set the default file name delimiter ........... |g:noteworthy_delimiter|
 Commands ........................................ |noteworthy-commands|
   Create or open a note ......................... |Note|
   Create or open a note in a split .............. |Snote|
@@ -36,6 +37,8 @@ Commands ........................................ |noteworthy-commands|
   List or change the file extension being used .. |NoteExtension|
   Allow any file extension in tab completion .... |NoteAmbiguousEnable|
   Disallow any file extension in tab completion . |NoteAmbiguousDisable|
+  Change the file name delimiter ................ |NoteDelimiter|
+Tips and recommended plugins                      |noteworthy-tips|
 
 ================================================================================
 
@@ -54,6 +57,7 @@ absolute paths to the libraries.
           \   'my_project': $HOME . '/my_project/docs/notes',
           \ }
 <
+
                                                   *g:noteworthy_default_library*
 Setting a default library~
 
@@ -72,6 +76,7 @@ This should be the file extension, not file type.
 >
     let g:noteworthy_file_ext = 'txt'
 <
+This can also be changed temporarily via the |NoteExtension| command.
 
                                                        *g:noteworthy_use_header*
 Using the default header~
@@ -82,7 +87,6 @@ will be created, and will be given the following header.
 >
     # Remember This
 <
-
 To disable this behavior, set this in your vimrc.
 >
     let g:noteworthy_use_header = 0
@@ -97,12 +101,10 @@ want the title to be upper-case instead of the default upper-case.
 >
     let g:noteworthy_header_command = "'# ' . toupper(title)"
 <
-
 This would make the header look like:
 >
     # REMEMBER THIS
 <
-
 Note that you have access to the variables "file" and "title", which will
 resolve to the full file path to the current note, and the base file name with
 any extension removed and underscores replaced by spaces, respectively.
@@ -117,12 +119,29 @@ Allow any file extension in tab completion~
 
 The default glob for tab-completion is "*.ext", where "ext" is the result of
 |g:noteworthy_file_ext|. To change the glob to "*.*" (any file extension), set
-the following in your vimrc. Note that this does not affect
-|g:noteworthy_file_ext|, only the tab-completion results.
-
+the following in your vimrc. Note that when this option is set to true,
+|g:noteworthy_file_ext| will not be automatically added if a new file has no
+extension; you must add it yourself.
 >
     let g:noteworthy_ambiguous = 1
 <
+This can also be changed temporarily via the |NoteAmbiguousEnable| and
+|NoteAmbiguousDisable| commands.
+
+                                                        *g:noteworthy_delimiter*
+Set the default file name delimiter~
+
+The default delimiter for joining file names together is "_". For example, if
+you type the following:
+>
+    :Note something to remember
+<
+The file name will be "something_to_remember.md". To change the underscores to
+something different, set the following variable in your vimrc.
+>
+    let g:noteworthy_delimiter = '-'
+<
+This can also be changed temporarily via the |NoteDelimiter| command.
 
 ================================================================================
 
@@ -154,13 +173,20 @@ COMMANDS                                                   *noteworthy-commands*
 :NoteExtension [{ext}]     Change the file extension being used when creating a
                            new note or using tab-completion to {ext}. If {ext}
                            is not provided, the current extension being used
-                           will be displayed.
+                           will be displayed. If ambiguous file extensions are
+                           enabled, this will not automatically be added to new
+                           notes.
 
                                     *NoteAmbiguousEnable* *:NoteAmbiguousEnable*
-:NoteAmbiguousEnable       Allow any file extension in tab completion. 
+:NoteAmbiguousEnable       Allow any file extension in tab completion.
 
                                   *NoteAmbiguousDisable* *:NoteAmbiguousDisable*
 :NoteAmbiguousDisable      Disallow any file extension in tab completion.
+
+                                                *NoteDelimiter* *:NoteDelimiter*
+:NoteDelimiter [{delim}]   Change the delimiter used to join the file name. If
+                           {delim} is not passed, the current delimiter being
+                           used will be displayed.
 
 ================================================================================
 

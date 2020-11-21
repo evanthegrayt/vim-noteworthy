@@ -47,3 +47,8 @@ command! -nargs=0 NoteAmbiguousEnable let g:noteworthy_ambiguous = 1
 " :NoteAmbiguousDisable
 " Turn ambiguous completion off. Completion will search for *.g:noteworthy_file_ext
 command! -nargs=0 NoteAmbiguousDisable let g:noteworthy_ambiguous = 0
+
+""
+" :NoteDelimiter [{delimiter}]
+" Show or change the current delimiter.
+command! -nargs=? NoteDelimiter call noteworthy#Delimiter(<f-args>)

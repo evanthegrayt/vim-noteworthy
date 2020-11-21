@@ -23,19 +23,6 @@ function! noteworthy#Vnote(...) abort
 endfunction
 
 ""
-" Call for :NoteLibrary. Decides if we're getting or setting, and calls the
-" appropriate function.
-function! noteworthy#Library(...) abort
-  if a:0
-    call s:SetCurrentLibrary(a:1)
-    echo 'Setting library to [' . a:1 . ']'
-    return
-  endif
-  call s:GetCurrentLibrary()
-  echo 'Current library is set to [' . g:noteworthy_current_library . ']'
-endfunction
-
-""
 " Completion for :NoteLibrary
 function! noteworthy#LibraryCompletion(...) abort
   return join(keys(g:noteworthy_libraries), "\n")
@@ -44,21 +31,48 @@ endfunction
 ""
 " Completion for :Note.
 function! noteworthy#Completion(arg_lead, cmd_line, cursor_pos) abort
-  let l:file_ext = get(g:, 'noteworthy_ambiguous', 0) ? '*' : s:GetNoteFileExt(1)
+  let l:fext = get(g:, 'noteworthy_ambiguous', 0) ? '*' : s:GetNoteFileExt()
   let l:dir = s:GetCurrentLibrary()
   if !isdirectory(l:dir) | return '' | endif
-  let l:list = glob(l:dir . '**/*.' . l:file_ext, 0, 1)
+  let l:list = glob(l:dir . '**/*.' . l:fext, 0, 1)
   return join(map(l:list, "substitute(v:val, l:dir, '', '')"), "\n")
+endfunction
+
+""
+" Call for :NoteLibrary. Decides if we're getting or setting, and calls the
+" appropriate function.
+function! noteworthy#Library(...) abort
+  if a:0
+    call s:SetCurrentLibrary(a:1)
+    echo 'Setting library to "' . a:1 . '"'
+    return
+  endif
+  call s:GetCurrentLibrary()
+  echo 'Current library is set to "' . g:noteworthy_current_library . '"'
 endfunction
 
 ""
 " Get or set the extension to use for notes.
 function! noteworthy#Extension(...) abort
   if a:0
+    echo 'Setting extension to "' . a:1 . '"'
     let g:noteworthy_file_ext = a:1
-  else
-    echo get(g:, 'noteworthy_file_ext', s:GetNoteFileExt())
+    return
   endif
+  echo 'Current extension is set to "' .
+        \ get(g:, 'noteworthy_file_ext', s:GetNoteFileExt()) . '"'
+endfunction
+
+""
+" Get or set the delimiter to use for file names.
+function! noteworthy#Delimiter(...) abort
+  if a:0
+    echo 'Setting delimiter to "' . a:1 . '"'
+    let g:noteworthy_delimiter = a:1
+    return
+  endif
+  echo 'Current delimiter is set to "' .
+        \ get(g:, 'noteworthy_delimiter', s:GetNoteDelimiter()) . '"'
 endfunction
 
 " PRIVATE API
@@ -95,30 +109,48 @@ endfunction
 
 ""
 " Determines the file extension for notes.
-function! s:GetNoteFileExt(...) abort
+function! s:GetNoteFileExt() abort
   return get(g:, 'noteworthy_file_ext', 'md')
+endfunction
+
+""
+" Determines the file extension for notes.
+function! s:GetNoteDelimiter() abort
+  return get(g:, 'noteworthy_delimiter', '_')
 endfunction
 
 ""
 " Create or open a note in the current library.
 function! s:File(command, segments) abort
-  let l:dir = s:GetCurrentLibrary()
-  let l:file_ext = s:GetNoteFileExt()
-  let l:file = l:dir . substitute(tolower(join(a:segments, '_')), "_*\/_*", "/", 'g')
-  if l:file !~# '\.' . l:file_ext . '$' | let l:file .= '.' . l:file_ext | endif
+  let l:delim = s:GetNoteDelimiter()
+  let l:fext = s:GetNoteFileExt()
+  let l:file = s:GetFileName(a:segments, l:delim)
   let l:basedir = fnamemodify(l:file, ':h')
   if !isdirectory(l:basedir) | call mkdir(l:basedir, 'p') | endif
   execute a:command l:file
   if getfsize(l:file) > 0 | return | endif
-  let l:title = substitute(fnamemodify(l:file, ':t:r'), '_', ' ', 'g')
-  if !get(g:, 'noteworthy_use_header', 1)
-    return
-  elseif exists('g:noteworthy_header_command')
-    let l:formatted_title = eval(g:noteworthy_header_command)
-  else
-    let l:formatted_title = '# ' . substitute(l:title, '\<.', '\u&', 'g')
-  endif
+  let l:title = substitute(fnamemodify(l:file, ':t:r'), l:delim, ' ', 'g')
+  if !get(g:, 'noteworthy_use_header', 1) | return | endif
+  let l:formatted_title = s:GetFormattedTitle(l:title)
   call append(0, [l:formatted_title])
+endfunction
+
+function! s:GetFileName(segments, delim) abort
+  let l:dir = s:GetCurrentLibrary()
+  let l:fext = s:GetNoteFileExt()
+  let l:regex = a:delim . '*\/' . a:delim . '*'
+  let l:file =  substitute(tolower(join(a:segments, a:delim)), l:regex, '/', 'g')
+  if !get(g:, 'noteworthy_ambiguous', 0) && l:file !~# '\.' . l:fext . '$'
+    let l:file .= '.' . l:fext
+  endif
+  return l:dir . l:file
+endfunction
+
+function! s:GetFormattedTitle(title) abort
+  if exists('g:noteworthy_header_command')
+    return eval(g:noteworthy_header_command)
+  endif
+  return '# ' . substitute(a:title, '\<.', '\u&', 'g')
 endfunction
 
 function s:Deprecated(from, to) abort

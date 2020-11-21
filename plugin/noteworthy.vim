@@ -28,10 +28,10 @@ command! -nargs=+ -complete=custom,noteworthy#Completion Tnote
       \ call noteworthy#Tnote(<f-args>)
 
 ""
-" :NoteLibrary [{directory}]
+" :NoteLibrary[!] [{directory}]
 " Show or change the current library.
-command! -nargs=? -complete=custom,noteworthy#LibraryCompletion NoteLibrary
-      \ call noteworthy#Library(<f-args>)
+command! -bang -nargs=? -complete=custom,noteworthy#LibraryCompletion NoteLibrary
+      \ call noteworthy#Library(<bang>0, <f-args>)
 
 ""
 " :NoteExtension {extension}

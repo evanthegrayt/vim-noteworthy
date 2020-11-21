@@ -30,7 +30,7 @@ endfunction
 
 ""
 " Completion for :Note.
-function! noteworthy#Completion(arg_lead, cmd_line, cursor_pos) abort
+function! noteworthy#Completion(...) abort
   let l:fext = get(g:, 'noteworthy_ambiguous', 0) ? '*' : s:GetNoteFileExt()
   let l:dir = s:GetCurrentLibrary()
   if !isdirectory(l:dir) | return '' | endif
@@ -41,17 +41,19 @@ endfunction
 ""
 " Call for :NoteLibrary. Decides if we're getting or setting, and calls the
 " appropriate function.
-function! noteworthy#Library(...) abort
+function! noteworthy#Library(visualize, ...) abort
   if a:0
     call s:SetCurrentLibrary(a:1)
     echo 'Setting library to "' . a:1 . '"'
-    return
+  else
+    echo 'Current library is set to "' . g:noteworthy_current_library . '"'
   endif
-  call s:GetCurrentLibrary()
-  echo 'Current library is set to "' . g:noteworthy_current_library . '"'
+  if a:visualize
+    call s:Visualize(s:GetCurrentLibrary())
+  endif
 endfunction
 
-""
+""{{{
 " Get or set the extension to use for notes.
 function! noteworthy#Extension(...) abort
   if a:0
@@ -74,12 +76,31 @@ function! noteworthy#Delimiter(...) abort
   echo 'Current delimiter is set to "' .
         \ get(g:, 'noteworthy_delimiter', s:GetNoteDelimiter()) . '"'
 endfunction
-
+"}}}
 " PRIVATE API
 
 ""
+" TODO Getting closer. The files just don't open when you hit they key.
+" Also, is Netrw just used for stuff like this? Should I not be trying to do
+" this manually?
+function! s:Visualize(library) abort
+  execute 'silent vsplit __' . toupper(g:noteworthy_current_library) . '_LIBRARY__'
+  setlocal buftype=nofile
+  setlocal modifiable
+  let l:files = split(noteworthy#Completion(), "\n")
+  call append(0, l:files)
+  nnoremap <buffer> o call noteworthy#Open(a:library)
+  silent normal! gg
+  setlocal nomodifiable
+endfunction
+
+function! noteworthy#Open(library) abort
+  echo 'edit' a:library . getline('.')
+endfunction
+
+""
 " The current library in use.
-function! s:GetCurrentLibrary()
+function! s:GetCurrentLibrary() abort
   if !exists('g:noteworthy_libraries')
     call s:Error("'g:noteworthy_libraries' is not set!")
     return 0
@@ -153,7 +174,7 @@ function! s:GetFormattedTitle(title) abort
   return '# ' . substitute(a:title, '\<.', '\u&', 'g')
 endfunction
 
-function s:Deprecated(from, to) abort
+function! s:Deprecated(from, to) abort
   call s:Warn(a:from . ' is deprecated. Use ' . a:to . 'instead.')
 endfunction
 

@@ -11,11 +11,14 @@ coding in. I made this plugin to make this process easier.
     - [Header generation](#header-generation)
     - [Custom header](#custom-header)
     - [Changing the default file extension](#changing-the-default-file-extension)
+    - [Allow any file extension in tab-completion](#allow-any-file-extension-in-tab-completion)
+    - [Set the default file name delimiter](#set-the-default-file-name-delimiter)
   - [Commands](#commands)
     - [Create or edit a note](#create-or-edit-a-note)
     - [Listing and changing libraries](#listing-and-changing-libraries)
     - [Changing the file extension](#changing-the-file-extension)
     - [Changing tab-completion globbing](#changing-tab-completion-globbing)
+    - [Change the file name delimiter](#change-the-file-name-delimiter)
   - [Tips and recommended plugins](#tips-and-recommended-plugins)
 - [Issues and Feature Requests](#issues-and-feature-requests)
 - [Self-Promotion](#self-promotion)
@@ -105,11 +108,27 @@ let g:noteworthy_file_ext = 'txt'
 #### Allow any file extension in tab-completion
 The default glob for tab-completion is `*.ext`, where `ext` is the result of
 `g:noteworthy_file_ext`. To change the glob to `*.*` (any file extension), set
-the following in your `vimrc`. Note that this does not affect
-`g:noteworthy_file_ext`, *only* the tab-completion results.
+the following in your `vimrc`. Note that when this option is set to true,
+`g:noteworthy_file_ext` will not be automatically added if a new file has no
+extension; you must add it yourself.
 
 ```vim
 let g:noteworthy_ambiguous = 1
+```
+
+#### Set the default file name delimiter
+The default delimiter for joining file names together is `_`. For example, if
+you type the following:
+
+```
+:Note something to remember
+```
+
+The file name will be `something_to_remember.md`. To change the underscores to
+something different, set the following variable in your `vimrc`.
+
+```vim
+let g:noteworthy_delimiter = '-'
 ```
 
 ### Commands
@@ -169,6 +188,14 @@ Commands are provided for changing the value of `g:noteworthy_ambiguous`.
 ```
 :NoteAmbiguousEnable
 :NoteAmbiguousDisable
+```
+
+#### Change the file name delimiter
+Change the delimiter used to join the file name. If a delimiter is not passed,
+the current delimiter being used will be displayed.
+
+```
+:NoteDelimiter -
 ```
 
 ### Tips and recommended plugins

@@ -13,6 +13,8 @@ coding in. I made this plugin to make this process easier.
     - [Changing the default file extension](#changing-the-default-file-extension)
     - [Allow any file extension in tab-completion](#allow-any-file-extension-in-tab-completion)
     - [Set the default file name delimiter](#set-the-default-file-name-delimiter)
+    - [Change the default window height for splits](#change-the-default-window-height-for-splits)
+    - [Change the default window width for vsplits](#change-the-default-window-width-for-vsplits)
   - [Commands](#commands)
     - [Create or edit a note](#create-or-edit-a-note)
     - [Listing and changing libraries](#listing-and-changing-libraries)
@@ -129,6 +131,26 @@ something different, set the following variable in your `vimrc`.
 
 ```vim
 let g:noteworthy_delimiter = '-'
+```
+
+#### Change the default window height for splits
+
+You can change the default window height for splits. The default is to split the
+current window in half. Note that, if `:Snote` is called with a count, this
+variable will be overridden.
+
+```vim
+let g:noteworthy_split_size = 30
+```
+
+#### Change the default window width for vsplits
+
+You can change the default window width for vertical splits. The default is to
+split the current window in half. Note that, if `:Vnote` is called with a count,
+this variable will be overridden.
+
+```vim
+let g:noteworthy_vsplit_size = 80
 ```
 
 ### Commands

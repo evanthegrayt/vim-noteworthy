@@ -10,16 +10,18 @@ command! -nargs=+ -complete=custom,noteworthy#Completion Note
       \ call noteworthy#Note(<f-args>)
 
 ""
-" :VNote {topic}, ...
-" Create or edit a note. Opens in vertical split.
-command! -nargs=+ -complete=custom,noteworthy#Completion Vnote
-      \ call noteworthy#Vnote(<f-args>)
+" :[N]VNote {topic}, ...
+" Create or edit a note. Opens in vertical split, [N] columns wide (default:
+" split current window in half)
+command! -count -nargs=+ -complete=custom,noteworthy#Completion Vnote
+      \ call noteworthy#Vnote(<count>, <f-args>)
 
 ""
-" :SNote {topic}, ...
-" Create or edit a note. Opens in split.
-command! -nargs=+ -complete=custom,noteworthy#Completion Snote
-      \ call noteworthy#Snote(<f-args>)
+" :[N]SNote {topic}, ...
+" Create or edit a note. Opens in split, [N] columns wide (default: split
+" current window in half)
+command! -count -nargs=+ -complete=custom,noteworthy#Completion Snote
+      \ call noteworthy#Snote(<count>, <f-args>)
 
 ""
 " :TNote {topic}, ...
@@ -45,7 +47,8 @@ command! -nargs=0 NoteAmbiguousEnable let g:noteworthy_ambiguous = 1
 
 ""
 " :NoteAmbiguousDisable
-" Turn ambiguous completion off. Completion will search for *.g:noteworthy_file_ext
+" Turn ambiguous completion off. Completion will search for *.ext, where ext
+" is the result of g:noteworthy_file_ext
 command! -nargs=0 NoteAmbiguousDisable let g:noteworthy_ambiguous = 0
 
 ""

@@ -28,6 +28,8 @@ Setup ........................................... |noteworthy-setup|
   Setting a custom header ....................... |g:noteworthy_header_command|
   Allow any file extension in tab completion .... |g:noteworthy_ambiguous|
   Set the default file name delimiter ........... |g:noteworthy_delimiter|
+  Change the default window height for splits ... |g:noteworthy_split_size|
+  Change the default window width for vsplits ... |g:noteworthy_vsplit_size|
 Commands ........................................ |noteworthy-commands|
   Create or open a note ......................... |Note|
   Create or open a note in a split .............. |Snote|
@@ -143,50 +145,74 @@ something different, set the following variable in your vimrc.
 <
 This can also be changed temporarily via the |NoteDelimiter| command.
 
+                                                       *g:noteworthy_split_size*
+Change the default window height for splits~
+
+You can change the default window height for splits. The default is to split
+the current window in half. Note that, if |Snote| is called with a count, this
+variable will be overridden.
+>
+    let g:noteworthy_split_size = 30
+<
+
+                                                      *g:noteworthy_vsplit_size*
+Change the default window width for vsplits~
+
+You can change the default window width for vertical splits. The default is to
+split the current window in half. Note that, if |Vnote| is called with a count,
+this variable will be overridden.
+>
+    let g:noteworthy_vsplit_size = 80
+<
+
 ================================================================================
 
 COMMANDS                                                   *noteworthy-commands*
 
                                                                   *Note* *:Note*
-:Note {topic} [{, ...}]    Create new {topic} markdown file in the
-                           |b:noteworthy_current_library|, or open it if it
-                           already exists. The file extension can be omitted.
-                           Can be multiple words separated by spaces, which
-                           will be replaced by underscores in the file name.
+:Note {topic} [{, ...}]     Create new {topic} markdown file in the
+                            |b:noteworthy_current_library|, or open it if it
+                            already exists. The file extension can be omitted.
+                            Can be multiple words separated by spaces, which
+                            will be replaced by underscores in the file name.
 
                                                                 *Snote* *:Snote*
-:Snote {topic} [{, ...}]   Same as |Note|, but opens in a split.
+:[N]Snote {topic} [{, ...}] Same as |Note|, but opens in a split. If N is
+                            provided, it will be used as the height of the
+                            window.
 
                                                                 *Vnote* *:Vnote*
-:Vnote {topic} [{, ...}]   Same as |Note|, but opens in a vertical split.
+:[N]Vnote {topic} [{, ...}] Same as |Note|, but opens in a vertical split. If N
+                            is provided, it will be used as the width of the
+                            window.
 
                                                                 *Tnote* *:Tnote*
-:Tnote {topic} [{, ...}]   Same as |Note|, but opens in new tab.
+:Tnote {topic} [{, ...}]    Same as |Note|, but opens in new tab.
 
                                                     *NoteLibrary* *:NoteLibrary*
-:NoteLibrary [{library}]   Switch to {library}, which should be a key of
-                           |g:noteworthy_libraries|. If {library} is not
-                           provided, the current library being used will be
-                           displayed.
+:NoteLibrary [{library}]    Switch to {library}, which should be a key of
+                            |g:noteworthy_libraries|. If {library} is not
+                            provided, the current library being used will be
+                            displayed.
 
                                                 *NoteExtension* *:NoteExtension*
-:NoteExtension [{ext}]     Change the file extension being used when creating a
-                           new note or using tab-completion to {ext}. If {ext}
-                           is not provided, the current extension being used
-                           will be displayed. If ambiguous file extensions are
-                           enabled, this will not automatically be added to new
-                           notes.
+:NoteExtension [{ext}]      Change the file extension being used when creating a
+                            new note or using tab-completion to {ext}. If {ext}
+                            is not provided, the current extension being used
+                            will be displayed. If ambiguous file extensions are
+                            enabled, this will not automatically be added to new
+                            notes.
 
                                     *NoteAmbiguousEnable* *:NoteAmbiguousEnable*
-:NoteAmbiguousEnable       Allow any file extension in tab completion.
+:NoteAmbiguousEnable        Allow any file extension in tab completion.
 
                                   *NoteAmbiguousDisable* *:NoteAmbiguousDisable*
-:NoteAmbiguousDisable      Disallow any file extension in tab completion.
+:NoteAmbiguousDisable       Disallow any file extension in tab completion.
 
                                                 *NoteDelimiter* *:NoteDelimiter*
-:NoteDelimiter [{delim}]   Change the delimiter used to join the file name. If
-                           {delim} is not passed, the current delimiter being
-                           used will be displayed.
+:NoteDelimiter [{delim}]    Change the delimiter used to join the file name. If
+                            {delim} is not passed, the current delimiter being
+                            used will be displayed.
 
 ================================================================================
 

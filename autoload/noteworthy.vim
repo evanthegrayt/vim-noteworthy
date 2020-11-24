@@ -7,19 +7,21 @@ endfunction
 ""
 " Open/create a note in a new tab.
 function! noteworthy#Tnote(...) abort
-  call s:File('tabe', a:000)
+  call s:File('tabedit', a:000)
 endfunction
 
 ""
 " Open/create a note in a new split.
-function! noteworthy#Snote(...) abort
-  call s:File('split', a:000)
+function! noteworthy#Snote(size, ...) abort
+  let l:prefix = a:size ? a:size : get(g:, 'noteworthy_split_size', '')
+  call s:File(l:prefix . 'split', a:000)
 endfunction
 
 ""
 " Open/create a note in a new vertical split.
-function! noteworthy#Vnote(...) abort
-  call s:File('vert split', a:000)
+function! noteworthy#Vnote(size, ...) abort
+  let l:prefix = a:size ? a:size : get(g:, 'noteworthy_vsplit_size', '')
+  call s:File(l:prefix . 'vsplit', a:000)
 endfunction
 
 ""

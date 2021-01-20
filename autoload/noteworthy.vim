@@ -43,14 +43,21 @@ endfunction
 ""
 " Call for :NoteLibrary. Decides if we're getting or setting, and calls the
 " appropriate function.
-function! noteworthy#Library(...) abort
+function! noteworthy#Library(bang, ...) abort
   if a:0
-    call s:SetCurrentLibrary(a:1)
-    echo 'Setting library to "' . a:1 . '"'
+    if s:SetCurrentLibrary(a:1)
+      let l:msg = 'Setting library to "' . a:1 . '"'
+      if a:bang | let l:msg .= ' ('. g:noteworthy_libraries[a:1].')' | endif
+      echo l:msg
+    endif
     return
   endif
   call s:GetCurrentLibrary()
-  echo 'Current library is set to "' . g:noteworthy_current_library . '"'
+  let l:msg = 'Current library is set to "' . g:noteworthy_current_library . '"'
+  if a:bang
+    let l:msg .= ' ('. s:GetCurrentLibrary() . ')'
+  endif
+  echo l:msg
 endfunction
 
 ""
@@ -102,7 +109,7 @@ endfunction
 " Set the library.
 function! s:SetCurrentLibrary(library) abort
   if !has_key(g:noteworthy_libraries, a:library)
-    s:Error('Key [' . a:library . '] does not exist!')
+    call s:Error('Library [' . a:library . '] does not exist!')
     return 0
   endif
   let g:noteworthy_current_library = a:library

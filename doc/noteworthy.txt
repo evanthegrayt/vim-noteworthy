@@ -190,10 +190,11 @@ COMMANDS                                                   *noteworthy-commands*
 :Tnote {topic} [{, ...}]    Same as |Note|, but opens in new tab.
 
                                                     *NoteLibrary* *:NoteLibrary*
-:NoteLibrary [{library}]    Switch to {library}, which should be a key of
+:NoteLibrary[!] [{library}] Switch to {library}, which should be a key of
                             |g:noteworthy_libraries|. If {library} is not
                             provided, the current library being used will be
-                            displayed.
+                            displayed. If [!] is supplied, also lists the file
+                            path of the library.
 
                                                 *NoteExtension* *:NoteExtension*
 :NoteExtension [{ext}]      Change the file extension being used when creating a

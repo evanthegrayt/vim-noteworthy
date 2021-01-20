@@ -195,6 +195,8 @@ available libraries.
 :NoteLibrary work
 ```
 
+To also see the path of the library, use `:NoteLibrary!` (with a bang).
+
 #### Changing the file extension
 To change the file extension being used for note creation and tab-completion
 globbing, call `:NoteExtension` and pass it the extension you'd like to use. If

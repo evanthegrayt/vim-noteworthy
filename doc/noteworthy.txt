@@ -30,6 +30,7 @@ Setup ........................................... |noteworthy-setup|
   Set the default file name delimiter ........... |g:noteworthy_delimiter|
   Change the default window height for splits ... |g:noteworthy_split_size|
   Change the default window width for vsplits ... |g:noteworthy_vsplit_size|
+  Considerations for project-specific notes ..... |noteworthy-project-specific|
 Commands ........................................ |noteworthy-commands|
   Create or open a note ......................... |Note|
   Create or open a note in a split .............. |Snote|
@@ -40,7 +41,7 @@ Commands ........................................ |noteworthy-commands|
   Allow any file extension in tab completion .... |NoteAmbiguousEnable|
   Disallow any file extension in tab completion . |NoteAmbiguousDisable|
   Change the file name delimiter ................ |NoteDelimiter|
-Tips and recommended plugins                      |noteworthy-tips|
+Tips and recommended plugins .................... |noteworthy-tips|
 
 ================================================================================
 
@@ -163,6 +164,46 @@ split the current window in half. Note that, if |Vnote| is called with a count,
 this variable will be overridden.
 >
     let g:noteworthy_vsplit_size = 80
+<
+
+                                                   *noteworthy-project-specific*
+If you want project-specific notes to be kept with your projects, and you use
+the same directory for notes in each project (for example, "doc/notes" in a
+Rails project), you can use a relative file path. Just make sure you open vim in
+the root of the project, or use a plugin like
+Rooter (https://github.com/airblade/vim-rooter).
+>
+    let g:noteworthy_libraries = {
+        \   'personal': $HOME . '/notes',
+        \   'project':  'doc/notes',
+        \ }
+<
+
+Optionally, set default to project-specific directory, if in a project.
+>
+    if isdirectory(g:noteworthy_libraries.project)
+      let g:noteworthy_default_library = 'project'
+    else
+      let g:noteworthy_default_library = 'personal'
+    endif
+<
+
+If you don't follow a convention, and you use a different directory for notes in
+each project, you could use set 'exrc' in your main vimrc file, and keep a
+project-specific ".vimrc" file in the root of each project that sets the library
+for that project. This would look similar to the following.
+
+In "~/.vimrc" or "~/.vim/vimrc"
+>
+    set exrc
+    set secure
+<
+
+In the root of the project, in a file named .vimrc
+>
+    if !exists('g:noteworthy_libraries') | let g:noteworthy_libraries = {} | endif
+    let g:noteworthy_libraries.project = 'doc/notes'
+    let g:noteworthy_default_library = 'project' " Optional.
 <
 
 ================================================================================

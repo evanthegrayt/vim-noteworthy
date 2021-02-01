@@ -8,6 +8,7 @@ coding in. I made this plugin to make this process easier.
 - [Usage](#usage)
   - [Setup](#setup)
     - [Defining library locations](#defining-library-locations)
+      - [Project-specific notes](#project-specific-notes)
     - [Header generation](#header-generation)
     - [Custom header](#custom-header)
     - [Changing the default file extension](#changing-the-default-file-extension)
@@ -58,6 +59,42 @@ let g:noteworthy_libraries = {
     \ }
 
 let g:noteworthy_default_library = 'personal'
+```
+
+##### Project-specific notes
+If you want project-specific notes to be kept with your projects, and you use
+the same directory for notes in each project (for example, `doc/notes` in a
+Rails project), you can use a relative file path. Just make sure you open vim in
+the root of the project, or use a plugin like
+[Rooter](https://github.com/airblade/vim-rooter).
+
+```vim
+let g:noteworthy_libraries = {
+    \   'personal': $HOME . '/notes',
+    \   'project':  'doc/notes',
+    \ }
+
+" Optional -- set default to project-specific directory, if in a project.
+if isdirectory(g:noteworthy_libraries.project)
+  let g:noteworthy_default_library = 'project'
+else
+  let g:noteworthy_default_library = 'personal'
+endif
+```
+
+If you don't follow a convention, and you use a different directory for notes in
+each project, you could use set `set exrc` in your main `vimrc` file, and keep a
+project-specific `.vimrc` file in the root of each project that sets the library
+for that project. This would look similar to the following.
+```vim
+" ~/.vimrc or ~/.vim/vimrc
+set exrc
+set secure " Optional, but recommended. Read :help secure.
+
+" In the root of the project, in a file named .vimrc
+if !exists('g:noteworthy_libraries') | let g:noteworthy_libraries = {} | endif
+let g:noteworthy_libraries.project = 'doc/notes'
+let g:noteworthy_default_library = 'project' " Optional.
 ```
 
 #### Header generation

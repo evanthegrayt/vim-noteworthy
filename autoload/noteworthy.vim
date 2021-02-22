@@ -27,14 +27,16 @@ endfunction
 ""
 " Completion for :NoteLibrary
 function! noteworthy#LibraryCompletion(...) abort
+  if !s:Validate() | return '' | endif
   return join(keys(g:noteworthy_libraries), "\n")
 endfunction
 
 ""
 " Completion for :Note.
 function! noteworthy#Completion(arg_lead, cmd_line, cursor_pos) abort
+  if !s:Validate() | return '' | endif
   let l:fext = get(g:, 'noteworthy_ambiguous', 0) ? '*' : s:GetNoteFileExt()
-  let l:dir = s:GetCurrentLibrary()
+  let l:dir = s:GetCurrentDirectory()
   if !isdirectory(l:dir) | return '' | endif
   let l:list = glob(l:dir . '**/*.' . l:fext, 0, 1)
   return join(map(l:list, "substitute(v:val, l:dir, '', '')"), "\n")
@@ -44,20 +46,26 @@ endfunction
 " Call for :NoteLibrary. Decides if we're getting or setting, and calls the
 " appropriate function.
 function! noteworthy#Library(bang, ...) abort
+  if !s:Validate() | return | endif
   if a:0
-    if s:SetCurrentLibrary(a:1)
-      let l:msg = 'Setting library to "' . a:1 . '"'
-      if a:bang | let l:msg .= ' ('. g:noteworthy_libraries[a:1].')' | endif
-      echo l:msg
-    endif
-    return
-  endif
-  call s:GetCurrentLibrary()
-  let l:msg = 'Current library is set to "' . g:noteworthy_current_library . '"'
-  if a:bang
-    let l:msg .= ' ('. s:GetCurrentLibrary() . ')'
+    if !s:SetCurrentLibrary(a:1) | return | endif
+    let l:msg = 'Setting library to "' . a:1 . '"'
+    if a:bang | let l:msg .= ' (' . g:noteworthy_libraries[a:1] . ')' | endif
+  else
+    let l:msg = 'Current library is set to "' . s:GetCurrentLibrary() . '"'
+    if a:bang | let l:msg .= ' ('. s:GetCurrentDirectory() . ')' | endif
   endif
   echo l:msg
+endfunction
+
+""
+" Search the note library for files containing pattern and populate the
+" quickfix window with the results.
+function! noteworthy#Search(pattern) abort
+  if !s:Validate() | return | endif
+  exec 'vimgrep! /' . a:pattern . '/gj '
+        \ . s:GetCurrentDirectory() . '**/*.' . s:GetNoteFileExt()
+  botright copen
 endfunction
 
 ""
@@ -88,31 +96,34 @@ endfunction
 
 ""
 " The current library in use.
-function! s:GetCurrentLibrary()
-  if !exists('g:noteworthy_libraries')
-    call s:Error("'g:noteworthy_libraries' is not set!")
-    return 0
-  elseif exists('g:noteworthy_current_library')
-    let l:dir = g:noteworthy_libraries[g:noteworthy_current_library]
-  elseif !exists('g:noteworthy_default_library')
-    call s:Error("'g:noteworthy_default_library' not set! " .
-          \ 'Set in vimrc or use :NoteLibrary [LIBRARY]')
-    return 0
-  else
-    call s:SetCurrentLibrary(g:noteworthy_default_library)
-    let l:dir = g:noteworthy_libraries[g:noteworthy_default_library]
+function! s:GetCurrentLibrary() abort
+  if exists('g:noteworthy_current_library')
+    return g:noteworthy_current_library
   endif
+  call s:SetCurrentLibrary()
+  return g:noteworthy_current_library
+endfunction
+
+""
+" The directory of the current library in use.
+function! s:GetCurrentDirectory() abort
+  let l:library = s:GetCurrentLibrary()
+  let l:dir = g:noteworthy_libraries[l:library]
   return resolve(expand(l:dir)) . '/'
 endfunction
 
 ""
 " Set the library.
-function! s:SetCurrentLibrary(library) abort
-  if !has_key(g:noteworthy_libraries, a:library)
-    call s:Error('Library [' . a:library . '] does not exist!')
+function! s:SetCurrentLibrary(...) abort
+  if !a:0 && !exists('g:noteworthy_default_library')
+    call s:Error("'g:noteworthy_default_library' not set! " .
+          \ 'Set in vimrc or use :NoteLibrary [LIBRARY]')
+    return 0
+  elseif a:0 && !has_key(g:noteworthy_libraries, a:1)
+    call s:Error('Library [' . a:1 . '] does not exist!')
     return 0
   endif
-  let g:noteworthy_current_library = a:library
+  let g:noteworthy_current_library = a:0 ? a:1 : g:noteworthy_default_library
   return 1
 endfunction
 
@@ -145,10 +156,10 @@ function! s:File(command, segments) abort
 endfunction
 
 function! s:GetFileName(segments, delim) abort
-  let l:dir = s:GetCurrentLibrary()
+  let l:dir = s:GetCurrentDirectory()
   let l:fext = s:GetNoteFileExt()
   let l:regex = a:delim . '*\/' . a:delim . '*'
-  let l:file =  substitute(tolower(join(a:segments, a:delim)), l:regex, '/', 'g')
+  let l:file = substitute(tolower(join(a:segments, a:delim)), l:regex, '/', 'g')
   if !get(g:, 'noteworthy_ambiguous', 0) && l:file !~# '\.' . l:fext . '$'
     let l:file .= '.' . l:fext
   endif
@@ -171,5 +182,15 @@ function! s:Warn(message) abort
 endfunction
 
 function! s:Error(message) abort
-  echohl ErrorMsg | echo 'Noteworthy: ' . a:message | echohl None
+  echohl ErrorMsg | echom 'Noteworthy: ' . a:message | echohl None
+endfunction
+
+function! s:Validate(...) abort
+  for l:variable in ['g:noteworthy_libraries', 'g:noteworthy_default_library']
+    if !exists(l:variable)
+      call s:Error(l:variable . ' not set.')
+      let l:rc = 0
+    endif
+  endfor
+  return get(l:, 'rc', 1)
 endfunction

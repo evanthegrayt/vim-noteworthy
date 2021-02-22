@@ -43,15 +43,20 @@ command! -nargs=? NoteExtension call noteworthy#Extension(<f-args>)
 ""
 " :NoteAmbiguousEnable
 " Turn ambiguous completion on. Completion will search for *.*
-command! -nargs=0 NoteAmbiguousEnable let g:noteworthy_ambiguous = 1
+command! NoteAmbiguousEnable let g:noteworthy_ambiguous = 1
 
 ""
 " :NoteAmbiguousDisable
 " Turn ambiguous completion off. Completion will search for *.ext, where ext
 " is the result of g:noteworthy_file_ext
-command! -nargs=0 NoteAmbiguousDisable let g:noteworthy_ambiguous = 0
+command! NoteAmbiguousDisable let g:noteworthy_ambiguous = 0
 
 ""
 " :NoteDelimiter [{delimiter}]
 " Show or change the current delimiter.
 command! -nargs=? NoteDelimiter call noteworthy#Delimiter(<f-args>)
+
+""
+" :NoteSearch {pattern}
+" Search for {pattern} in the current note library.
+command! -nargs=1 NoteSearch call noteworthy#Search(<f-args>)

@@ -36,6 +36,7 @@ Commands ........................................ |noteworthy-commands|
   Create or open a note in a split .............. |Snote|
   Create or open a note in a vertical split ..... |Vnote|
   Create or open a note in a new tab ............ |Tnote|
+  Search the current library .................... |NoteSearch|
   List or change library ........................ |NoteLibrary|
   List or change the file extension being used .. |NoteExtension|
   Allow any file extension in tab completion .... |NoteAmbiguousEnable|
@@ -229,6 +230,16 @@ COMMANDS                                                   *noteworthy-commands*
 
                                                                 *Tnote* *:Tnote*
 :Tnote {topic} [{, ...}]    Same as |Note|, but opens in new tab.
+
+
+                                                      *NoteSearch* *:NoteSearch*
+:NoteSearch {pattern}       Search for {pattern} in the current library and
+                            populate the quickfix window with the results.
+                            This is basically just a wrapper for |:vimgrep|, so
+                            you are free to use regular expressions. Note that
+                            very-magic mode is not enabled by default, but you
+                            can prepend your search pattern with |\v| to enable
+                            it.
 
                                                     *NoteLibrary* *:NoteLibrary*
 :NoteLibrary[!] [{library}] Switch to {library}, which should be a key of

@@ -19,6 +19,7 @@ and project-specific libraries.
     - [Change the default window width for vsplits](#change-the-default-window-width-for-vsplits)
   - [Commands](#commands)
     - [Create or edit a note](#create-or-edit-a-note)
+    - [Searching the current library](#searching-the-current-library)
     - [Listing and changing libraries](#listing-and-changing-libraries)
     - [Changing the file extension](#changing-the-file-extension)
     - [Changing tab-completion globbing](#changing-tab-completion-globbing)
@@ -221,6 +222,18 @@ Any one of the above commands will open a file called
 Note that `:Snote`, `:Vnote`, and `:Tnote` commands also exist. They behave the
 same as `:Note`, except they open the note in a split, vertical split, and new
 tab, respectively.
+
+#### Searching the Current Library
+You can search for a pattern in the current note library with the `:NoteSearch`
+command, and the matches will be placed into the quickfix list.
+
+```
+:NoteSearch [PATTERN]
+```
+
+This is basically just a wrapper for `:vimgrep`, so you are free to use regular
+expressions. Note that very-magic mode is not enabled by default, but you can
+prepend your search pattern with `\v` to enable it.
 
 #### Listing and changing libraries
 To see which library is currently in use, call `:NoteLibrary`.

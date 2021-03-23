@@ -3,6 +3,13 @@ if exists('g:loaded_noteworthy') || &cp
 endif
 let g:loaded_noteworthy = 1
 
+if exists('g:noteworthy_dynamic_libraries')
+  augroup noteworthy
+    autocmd!
+    autocmd VimEnter,BufRead,DirChanged * call noteworthy#HandleDynamicLibraries()
+  augroup END
+endif
+
 ""
 " :Note {topic}, ...
 " Create or edit a note. Opens in current window.

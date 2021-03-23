@@ -9,7 +9,7 @@ and project-specific libraries.
 - [Usage](#usage)
   - [Setup](#setup)
     - [Defining library locations](#defining-library-locations)
-      - [Project-specific notes](#project-specific-notes)
+      - [Project-specific/dynamic libraries](#project-specificdynamic-libraries)
     - [Header generation](#header-generation)
     - [Custom header](#custom-header)
     - [Changing the default file extension](#changing-the-default-file-extension)
@@ -50,9 +50,7 @@ Generate and view the help from within vim.
 ### Setup
 #### Defining library locations
 To get started, define a dictionary of libraries and their file paths in your
-`vimrc`, and tell it which is the default to use. If a default is not set, you
-will have to tell it which library to use each time you open a new `vim`
-instance.
+`vimrc`, and tell it which is the default to use.
 
 ```vim
 let g:noteworthy_libraries = {
@@ -63,41 +61,37 @@ let g:noteworthy_libraries = {
 let g:noteworthy_default_library = 'personal'
 ```
 
-##### Project-specific notes
-If you want project-specific notes to be kept with your projects, and you use
-the same directory for notes in each project (for example, `doc/notes` in a
-Rails project), you can use a relative file path. Just make sure you open vim in
-the root of the project, or use a plugin like
-[Rooter](https://github.com/airblade/vim-rooter).
+##### Project-specific/dynamic libraries
+You can define a dictionary of directories and their corresponding relative
+library locations.
 
 ```vim
-let g:noteworthy_libraries = {
-    \   'personal': $HOME . '/notes',
-    \   'project':  'doc/notes',
-    \ }
-
-" Optional -- set default to project-specific directory, if in a project.
-if isdirectory(g:noteworthy_libraries.project)
-  let g:noteworthy_default_library = 'project'
-else
-  let g:noteworthy_default_library = 'personal'
-endif
+let g:noteworthy_dynamic_libraries = {
+      \   '/home/me/project1': 'doc/notes',
+      \   '/home/me/directory/project2': 'notes'
+      \ }
 ```
 
-If you don't follow a convention, and you use a different directory for notes in
-each project, you could use set `set exrc` in your main `vimrc` file, and keep a
-project-specific `.vimrc` file in the root of each project that sets the library
-for that project. This would look similar to the following.
+When a file is opened, and the current directory is a key in
+this dictionary, that library will be accessible with `:NoteLibrary dynamic`.
+The name `dynamic` can be changed with `g:noteworthy_dynamic_library_name`.
+
 ```vim
-" ~/.vimrc or ~/.vim/vimrc
-set exrc
-set secure " Optional, but recommended. Read :help secure.
-
-" In the root of the project, in a file named .vimrc
-if !exists('g:noteworthy_libraries') | let g:noteworthy_libraries = {} | endif
-let g:noteworthy_libraries.project = 'doc/notes'
-let g:noteworthy_default_library = 'project' " Optional.
+" To make the dynamic library callable with `:NoteLibrary project`
+let g:noteworthy_dynamic_library_name = 'project'
 ```
+
+Because this library is not always available, it shouldn't be used as
+`g:noteworthy_default_library`. If you would like the dynamic library to be the
+default *when it's available*, you can set `g:noteworthy_prefer_dynamic` to
+true.
+
+```vim
+let g:noteworthy_prefer_dynamic = 1
+```
+
+When set, any time a file is opened in, or the directory is changed to, a key in
+the dictionary, it will automatically be set as the default library.
 
 #### Header generation
 The plugin can automatically generate a title for new notes. If you call `:Note
@@ -284,8 +278,7 @@ recommend using the [Tagbar](https://github.com/preservim/tagbar) plugin with
 page by headers, and makes it much easier to navigate large note files.
 
 ## Issues and Feature Requests
-This is a new project, and isn't feature-rich yet. I plan on doing a lot with
-this plugin, so check the [issue
+This is a new project, and I plan on doing a lot with it, so check the [issue
 list](https://github.com/evanthegrayt/vim-noteworthy/issues) to see my ideas for
 the future of it. Comments and feedback are more than welcome on the issues.
 

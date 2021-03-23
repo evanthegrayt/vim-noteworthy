@@ -32,10 +32,30 @@ function! noteworthy#LibraryCompletion(...) abort
 endfunction
 
 ""
+" Adds the dynamic library to the list of libraries. If preferred, will
+" automatically set current library to the dynamic library.
+function! noteworthy#HandleDynamicLibraries() abort
+  if has_key(g:noteworthy_dynamic_libraries, getcwd())
+    let g:noteworthy_libraries[s:DynamicLibraryName()] =
+          \ g:noteworthy_dynamic_libraries[getcwd()]
+    if get(g:, 'noteworthy_prefer_dynamic')
+      let g:noteworthy_current_library = s:DynamicLibraryName()
+    endif
+  else
+    if get(g:, 'noteworthy_current_library') == s:DynamicLibraryName()
+      unlet! g:noteworthy_current_library
+    endif
+    if has_key(g:noteworthy_libraries, s:DynamicLibraryName())
+      unlet g:noteworthy_libraries[s:DynamicLibraryName()]
+    endif
+  endif
+endfunction
+
+""
 " Completion for :Note.
 function! noteworthy#Completion(arg_lead, cmd_line, cursor_pos) abort
   if !s:Validate() | return '' | endif
-  let l:fext = get(g:, 'noteworthy_ambiguous', 0) ? '*' : s:GetNoteFileExt()
+  let l:fext = get(g:, 'noteworthy_ambiguous') ? '*' : s:GetNoteFileExt()
   let l:dir = s:GetCurrentDirectory()
   if !isdirectory(l:dir) | return '' | endif
   let l:list = glob(l:dir . '**/*.' . l:fext, 0, 1)
@@ -63,9 +83,16 @@ endfunction
 " quickfix window with the results.
 function! noteworthy#Search(pattern) abort
   if !s:Validate() | return | endif
-  exec 'vimgrep! /' . a:pattern . '/gj '
-        \ . s:GetCurrentDirectory() . '**/*.' . s:GetNoteFileExt()
-  botright copen
+  try
+    exec 'vimgrep! /' . a:pattern . '/gj '
+          \ . s:GetCurrentDirectory() . '**/*.' . s:GetNoteFileExt()
+    botright copen
+  catch
+    call s:Error(
+          \   "No results found for " . a:pattern . " in library "
+          \   . g:noteworthy_current_library
+          \ )
+  endtry
 endfunction
 
 ""
@@ -123,7 +150,16 @@ function! s:SetCurrentLibrary(...) abort
     call s:Error('Library [' . a:1 . '] does not exist!')
     return 0
   endif
-  let g:noteworthy_current_library = a:0 ? a:1 : g:noteworthy_default_library
+  if a:0
+    let g:noteworthy_current_library = a:1
+  else
+    if has_key(g:noteworthy_libraries, s:DynamicLibraryName()) &&
+          \ get(g:, 'noteworthy_prefer_dynamic')
+      let g:noteworthy_current_library = s:DynamicLibraryName()
+    else
+      let g:noteworthy_current_library = g:noteworthy_default_library
+    endif
+  endif
   return 1
 endfunction
 
@@ -160,7 +196,7 @@ function! s:GetFileName(segments, delim) abort
   let l:fext = s:GetNoteFileExt()
   let l:regex = a:delim . '*\/' . a:delim . '*'
   let l:file = substitute(tolower(join(a:segments, a:delim)), l:regex, '/', 'g')
-  if !get(g:, 'noteworthy_ambiguous', 0) && l:file !~# '\.' . l:fext . '$'
+  if !get(g:, 'noteworthy_ambiguous') && l:file !~# '\.' . l:fext . '$'
     let l:file .= '.' . l:fext
   endif
   return l:dir . l:file
@@ -182,7 +218,7 @@ function! s:Warn(message) abort
 endfunction
 
 function! s:Error(message) abort
-  echohl ErrorMsg | echom 'Noteworthy: ' . a:message | echohl None
+  echohl ErrorMsg | echomsg 'Noteworthy: ' . a:message | echohl None
 endfunction
 
 function! s:Validate(...) abort
@@ -193,4 +229,8 @@ function! s:Validate(...) abort
     endif
   endfor
   return get(l:, 'rc', 1)
+endfunction
+
+function! s:DynamicLibraryName() abort
+  return get(g:, 'noteworthy_dynamic_library_name', 'dynamic')
 endfunction

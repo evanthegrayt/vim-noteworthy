@@ -20,29 +20,32 @@ License: MIT License
 
 TABLE OF CONTENTS                                               *noteworthy-toc*
 
-Setup ........................................... |noteworthy-setup|
-  Identifying your notes libraries .............. |g:noteworthy_libraries|
-  Setting a default library ..................... |g:noteworthy_default_library|
-  Setting file extension for notes .............. |g:noteworthy_file_ext|
-  Using the default header ...................... |g:noteworthy_use_header|
-  Setting a custom header ....................... |g:noteworthy_header_command|
-  Allow any file extension in tab completion .... |g:noteworthy_ambiguous|
-  Set the default file name delimiter ........... |g:noteworthy_delimiter|
-  Change the default window height for splits ... |g:noteworthy_split_size|
-  Change the default window width for vsplits ... |g:noteworthy_vsplit_size|
-  Considerations for project-specific notes ..... |noteworthy-project-specific|
-Commands ........................................ |noteworthy-commands|
-  Create or open a note ......................... |Note|
-  Create or open a note in a split .............. |Snote|
-  Create or open a note in a vertical split ..... |Vnote|
-  Create or open a note in a new tab ............ |Tnote|
-  Search the current library .................... |NoteSearch|
-  List or change library ........................ |NoteLibrary|
-  List or change the file extension being used .. |NoteExtension|
-  Allow any file extension in tab completion .... |NoteAmbiguousEnable|
-  Disallow any file extension in tab completion . |NoteAmbiguousDisable|
-  Change the file name delimiter ................ |NoteDelimiter|
-Tips and recommended plugins .................... |noteworthy-tips|
+Setup ........................................ |noteworthy-setup|
+  Identifying your notes libraries ........... |g:noteworthy_libraries|
+  Setting a default library .................. |g:noteworthy_default_library|
+  Setting project-specific libraries ......... |g:noteworthy_dynamic_libraries|
+  Change name of dynamic library ............. |g:noteworthy_dynamic_library_name|
+  Prefer dynamic libraries when available .... |g:noteworthy_prefer_dynamic|
+  Setting file extension for notes ........... |g:noteworthy_file_ext|
+  Using the default header ................... |g:noteworthy_use_header|
+  Setting a custom header .................... |g:noteworthy_header_command|
+  Allow any file extension in tab completion . |g:noteworthy_ambiguous|
+  Set the default file name delimiter ........ |g:noteworthy_delimiter|
+  Change default window height for splits .... |g:noteworthy_split_size|
+  Change default window width for vsplits .... |g:noteworthy_vsplit_size|
+  Considerations for project-specific notes .. |noteworthy-project-specific|
+Commands ..................................... |noteworthy-commands|
+  Create or open a note ...................... |Note|
+  Create or open a note in a split ........... |Snote|
+  Create or open a note in a vertical split .. |Vnote|
+  Create or open a note in a new tab ......... |Tnote|
+  Search the current library ................. |NoteSearch|
+  List or change library ..................... |NoteLibrary|
+  List or change the current note extension .. |NoteExtension|
+  Allow any file extension in tab completion . |NoteAmbiguousEnable|
+  Restrict file extensions in tab completion . |NoteAmbiguousDisable|
+  Change the file name delimiter ............. |NoteDelimiter|
+Tips and recommended plugins ................. |noteworthy-tips|
 
 ================================================================================
 
@@ -71,6 +74,42 @@ set the library every time you open a new vim instance.
 >
     let g:noteworthy_default_library = 'work'
 <
+
+                                                *g:noteworthy_dynamic_libraries*
+Project-specific/dynamic libraries~
+
+You can define a dictionary of directories and their corresponding relative
+library locations.
+>
+    let g:noteworthy_dynamic_libraries = {
+          \   '/home/me/project1': 'doc/notes',
+          \   '/home/me/directory/project2': 'notes'
+          \ }
+<
+
+When a file is opened, and the current directory is a key in this dictionary,
+that library will be accessible with the name "dynamic".
+>
+    :NoteLibrary dynamic
+<
+
+                                             *g:noteworthy_dynamic_library_name*
+This option can be used to change the "dynamic" library name to a different
+name. For example, the following would make the dynamic library name, "project".
+>
+    let g:noteworthy_dynamic_library_name = 'project'
+<
+
+                                                   *g:noteworthy_prefer_dynamic*
+Because the "dynamic" library is not always available, it shouldn't be used as
+|g:noteworthy_default_library|. If you would like the dynamic library to be the
+default when it's available, you can set this option to true.
+>
+    let g:noteworthy_prefer_dynamic = 1
+<
+When set, any time a file is opened in, or the directory is changed to, a key in
+the dictionary, it will automatically be set as the default library.
+
 
                                                          *g:noteworthy_file_ext*
 Setting file extension for notes~

@@ -272,13 +272,17 @@ COMMANDS                                                   *noteworthy-commands*
 
 
                                                       *NoteSearch* *:NoteSearch*
-:NoteSearch {pattern}       Search for {pattern} in the current library and
-                            populate the quickfix window with the results.
-                            This is basically just a wrapper for |:vimgrep|, so
-                            you are free to use regular expressions. Note that
-                            very-magic mode is not enabled by default, but you
-                            can prepend your search pattern with |\v| to enable
-                            it.
+:NoteSearch {pattern} [{subdirectory}]
+                            Search for {pattern} in the current library and
+                            populate the quickfix window with the results. If
+                            your `PATTERN` contains a space, it must be
+                            escaped, or it will be recognized as a multiple
+                            arguments. If {subdirectory} is supplied, scope
+                            results to that subdirectory. This is basically
+                            just a wrapper for |:vimgrep|, so you are free to
+                            use regular expressions. Note that very-magic mode
+                            is not enabled by default, but you can prepend your
+                            search pattern with |\v| to enable it.
 
                                                     *NoteLibrary* *:NoteLibrary*
 :NoteLibrary[!] [{library}] Switch to {library}, which should be a key of

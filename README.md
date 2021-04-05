@@ -188,7 +188,7 @@ let g:noteworthy_vsplit_size = 80
 
 ### Commands
 #### Create or edit a note
-Create or edit a note with `:Note [subject...]`. The `subject` will be used as
+Create or edit a note with `:Note SUBJECT...`. The `SUBJECT` will be used as
 the file name, and any spaces will be replaced by underscores. No file extension
 is required.
 
@@ -219,10 +219,13 @@ tab, respectively.
 
 #### Searching the Current Library
 You can search for a pattern in the current note library with the `:NoteSearch`
-command, and the matches will be placed into the quickfix list.
+command, and the matches will be placed into the quickfix list. Note that if
+your `PATTERN` contains a space, it must be escaped, or it will be recognized as
+a multiple arguments. To scope the results to a specific subdirectory in the
+library, pass the optional `SUBDIRECTORY` argument.
 
 ```
-:NoteSearch [PATTERN]
+:NoteSearch PATTERN [SUBDIRECTORY]
 ```
 
 This is basically just a wrapper for `:vimgrep`, so you are free to use regular
@@ -230,10 +233,10 @@ expressions. Note that very-magic mode is not enabled by default, but you can
 prepend your search pattern with `\v` to enable it.
 
 #### Listing and changing libraries
-To see which library is currently in use, call `:NoteLibrary`.
+To see which library is currently in use, call `:NoteLibrary` with no arguments.
 
-To change which library is being used, call `:NoteLibrary [library]`, where
-`library` is a key from `g:noteworthy_libraries`. Tab-completion will list
+To change which library is being used, call `:NoteLibrary [LIBRARY]`, where
+`LIBRARY` is a key from `g:noteworthy_libraries`. Tab-completion will list
 available libraries.
 
 ```

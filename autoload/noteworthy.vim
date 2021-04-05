@@ -81,11 +81,13 @@ endfunction
 ""
 " Search the note library for files containing pattern and populate the
 " quickfix window with the results.
-function! noteworthy#Search(pattern) abort
+function! noteworthy#Search(pattern, ...) abort
   if !s:Validate() | return | endif
+  let l:directory = s:GetCurrentDirectory()
+  if a:0 | let l:directory .= a:1 . '/' | endif
+  let l:directory .= '**/*.' . s:GetNoteFileExt()
   try
-    exec 'vimgrep! /' . a:pattern . '/gj '
-          \ . s:GetCurrentDirectory() . '**/*.' . s:GetNoteFileExt()
+    exec 'vimgrep! /' . a:pattern . '/gj' . ' ' . l:directory
     botright copen
   catch
     call s:Error(

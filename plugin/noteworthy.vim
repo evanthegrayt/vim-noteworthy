@@ -66,4 +66,4 @@ command! -nargs=? NoteDelimiter call noteworthy#Delimiter(<f-args>)
 ""
 " :NoteSearch {pattern}
 " Search for {pattern} in the current note library.
-command! -nargs=1 NoteSearch call noteworthy#Search(<f-args>)
+command! -nargs=+ NoteSearch call noteworthy#Search(<f-args>)

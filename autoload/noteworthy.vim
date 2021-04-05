@@ -1,27 +1,29 @@
 ""
 " Open/create a note.
-function! noteworthy#Note(...) abort
-  call s:File('edit', a:000)
+function! noteworthy#Note(line1, line2, ...) abort
+  call s:File('edit', a:000, a:line1, a:line2)
 endfunction
 
 ""
 " Open/create a note in a new tab.
-function! noteworthy#Tnote(...) abort
-  call s:File('tabedit', a:000)
+function! noteworthy#Tnote(line1, line2, ...) abort
+  call s:File('tabedit', a:000, a:line1, a:line2)
 endfunction
 
 ""
 " Open/create a note in a new split.
-function! noteworthy#Snote(size, ...) abort
-  let l:prefix = a:size ? a:size : get(g:, 'noteworthy_split_size', '')
-  call s:File(l:prefix . 'split', a:000)
+function! noteworthy#Snote(line1, line2, ...) abort
+  call s:File(get(
+        \   g:, 'noteworthy_split_size', ''
+        \ ) . 'split', a:000, a:line1, a:line2)
 endfunction
 
 ""
 " Open/create a note in a new vertical split.
-function! noteworthy#Vnote(size, ...) abort
-  let l:prefix = a:size ? a:size : get(g:, 'noteworthy_vsplit_size', '')
-  call s:File(l:prefix . 'vsplit', a:000)
+function! noteworthy#Vnote(line1, line2, ...) abort
+  call s:File(get(
+        \   g:, 'noteworthy_vsplit_size', ''
+        \ ) . 'vsplit', a:000, a:line1, a:line2)
 endfunction
 
 ""
@@ -179,18 +181,22 @@ endfunction
 
 ""
 " Create or open a note in the current library.
-function! s:File(command, segments) abort
+function! s:File(command, segments, line1, line2) abort
   let l:delim = s:GetNoteDelimiter()
   let l:fext = s:GetNoteFileExt()
   let l:file = s:GetFileName(a:segments, l:delim)
   let l:basedir = fnamemodify(l:file, ':h')
+  if a:line1 != 0 | let l:lines = getline(a:line1, a:line2) | endif
   if !isdirectory(l:basedir) | call mkdir(l:basedir, 'p') | endif
   execute a:command l:file
-  if getfsize(l:file) > 0 | return | endif
-  let l:title = substitute(fnamemodify(l:file, ':t:r'), l:delim, ' ', 'g')
-  if !get(g:, 'noteworthy_use_header', 1) | return | endif
-  let l:formatted_title = s:GetFormattedTitle(l:title)
-  call append(0, [l:formatted_title])
+  if get(g:, 'noteworthy_use_header', 1) && getfsize(l:file) <= 0
+    let l:title = substitute(fnamemodify(l:file, ':t:r'), l:delim, ' ', 'g')
+    call append(0, s:GetFormattedTitle(l:title))
+  endif
+  if exists('l:lines')
+    let l:last_line = trim(getline(line('$'))) == '' ? line('$') - 1 : line('$')
+    call append(l:last_line, l:lines)
+  endif
 endfunction
 
 function! s:GetFileName(segments, delim) abort

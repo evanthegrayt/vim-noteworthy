@@ -13,28 +13,28 @@ endif
 ""
 " :Note {topic}, ...
 " Create or edit a note. Opens in current window.
-command! -nargs=+ -complete=custom,noteworthy#Completion Note
-      \ call noteworthy#Note(<f-args>)
+command! -nargs=+ -range=0 -complete=custom,noteworthy#Completion Note
+      \ call noteworthy#Note(<range> ? <line1> : 0, <range> ? <line2> : 0, <f-args>)
 
 ""
 " :[N]VNote {topic}, ...
 " Create or edit a note. Opens in vertical split, [N] columns wide (default:
 " split current window in half)
-command! -count -nargs=+ -complete=custom,noteworthy#Completion Vnote
-      \ call noteworthy#Vnote(<count>, <f-args>)
+command! -range=0 -nargs=+ -complete=custom,noteworthy#Completion Vnote
+      \ call noteworthy#Vnote(<range> ? <line1> : 0, <range> ? <line2> : 0, <f-args>)
 
 ""
 " :[N]SNote {topic}, ...
 " Create or edit a note. Opens in split, [N] columns wide (default: split
 " current window in half)
-command! -count -nargs=+ -complete=custom,noteworthy#Completion Snote
-      \ call noteworthy#Snote(<count>, <f-args>)
+command! -range=0 -nargs=+ -complete=custom,noteworthy#Completion Snote
+      \ call noteworthy#Snote(<range> ? <line1> : 0, <range> ? <line2> : 0, <f-args>)
 
 ""
 " :TNote {topic}, ...
 " Create or edit a note. Opens in new tab.
-command! -nargs=+ -complete=custom,noteworthy#Completion Tnote
-      \ call noteworthy#Tnote(<f-args>)
+command! -range=0 -nargs=+ -complete=custom,noteworthy#Completion Tnote
+      \ call noteworthy#Tnote(<range> ? <line1> : 0, <range> ? <line2> : 0, <f-args>)
 
 ""
 " :NoteLibrary [{directory}]

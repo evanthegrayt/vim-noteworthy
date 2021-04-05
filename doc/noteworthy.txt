@@ -251,24 +251,27 @@ In the root of the project, in a file named .vimrc
 COMMANDS                                                   *noteworthy-commands*
 
                                                                   *Note* *:Note*
-:Note {topic} [{, ...}]     Create new {topic} markdown file in the
+:[{range}]Note {topic} [{, ...}]
+                            Create new {topic} markdown file in the
                             |b:noteworthy_current_library|, or open it if it
                             already exists. The file extension can be omitted.
                             Can be multiple words separated by spaces, which
                             will be replaced by underscores in the file name.
+                            If [{range}] is provided (works with visual
+                            selection), the lines of the current file will be
+                            appended to the note.
 
                                                                 *Snote* *:Snote*
-:[N]Snote {topic} [{, ...}] Same as |Note|, but opens in a split. If N is
-                            provided, it will be used as the height of the
-                            window.
+:[{range}]Snote {topic} [{, ...}]
+                            Same as |:Note|, but opens in a split.
 
                                                                 *Vnote* *:Vnote*
-:[N]Vnote {topic} [{, ...}] Same as |Note|, but opens in a vertical split. If N
-                            is provided, it will be used as the width of the
-                            window.
+:[{range}]Vnote {topic} [{, ...}]
+                            Same as |:Note|, but opens in a vertical split.
 
                                                                 *Tnote* *:Tnote*
-:Tnote {topic} [{, ...}]    Same as |Note|, but opens in new tab.
+:[{range}]Tnote {topic} [{, ...}]
+                            Same as |:Note|, but opens in new tab.
 
 
                                                       *NoteSearch* *:NoteSearch*

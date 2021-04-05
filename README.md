@@ -169,8 +169,7 @@ let g:noteworthy_delimiter = '-'
 #### Change the default window height for splits
 
 You can change the default window height for splits. The default is to split the
-current window in half. Note that, if `:Snote` is called with a count, this
-variable will be overridden.
+current window in half.
 
 ```vim
 let g:noteworthy_split_size = 30
@@ -179,8 +178,7 @@ let g:noteworthy_split_size = 30
 #### Change the default window width for vsplits
 
 You can change the default window width for vertical splits. The default is to
-split the current window in half. Note that, if `:Vnote` is called with a count,
-this variable will be overridden.
+split the current window in half.
 
 ```vim
 let g:noteworthy_vsplit_size = 80
@@ -212,6 +210,9 @@ You can also use subdirectories, and they will be created if they don't exist.
 
 Any one of the above commands will open a file called
 `rails/remember_this_about_rails.md` in your current library.
+
+If called with a range (or a visual selection), the corresponding lines of your
+current file will be appended to the note being edited.
 
 Note that `:Snote`, `:Vnote`, and `:Tnote` commands also exist. They behave the
 same as `:Note`, except they open the note in a split, vertical split, and new

@@ -1,29 +1,29 @@
 ""
 " Open/create a note.
-function! noteworthy#Note(line1, line2, ...) abort
-  call s:File('edit', a:000, a:line1, a:line2)
+function! noteworthy#Note(range, line1, line2, ...) abort
+  call s:File('edit', a:000, a:range, a:line1, a:line2)
 endfunction
 
 ""
 " Open/create a note in a new tab.
-function! noteworthy#Tnote(line1, line2, ...) abort
-  call s:File('tabedit', a:000, a:line1, a:line2)
+function! noteworthy#Tnote(range, line1, line2, ...) abort
+  call s:File('tabedit', a:000, a:range, a:line1, a:line2)
 endfunction
 
 ""
 " Open/create a note in a new split.
-function! noteworthy#Snote(line1, line2, ...) abort
+function! noteworthy#Snote(range, line1, line2, ...) abort
   call s:File(get(
         \   g:, 'noteworthy_split_size', ''
-        \ ) . 'split', a:000, a:line1, a:line2)
+        \ ) . 'split', a:000, a:range, a:line1, a:line2)
 endfunction
 
 ""
 " Open/create a note in a new vertical split.
-function! noteworthy#Vnote(line1, line2, ...) abort
+function! noteworthy#Vnote(range, line1, line2, ...) abort
   call s:File(get(
         \   g:, 'noteworthy_vsplit_size', ''
-        \ ) . 'vsplit', a:000, a:line1, a:line2)
+        \ ) . 'vsplit', a:000, a:range, a:line1, a:line2)
 endfunction
 
 ""
@@ -181,12 +181,12 @@ endfunction
 
 ""
 " Create or open a note in the current library.
-function! s:File(command, segments, line1, line2) abort
+function! s:File(command, segments, range, line1, line2) abort
   let l:delim = s:GetNoteDelimiter()
   let l:fext = s:GetNoteFileExt()
   let l:file = s:GetFileName(a:segments, l:delim)
   let l:basedir = fnamemodify(l:file, ':h')
-  if a:line1 != 0 | let l:lines = getline(a:line1, a:line2) | endif
+  if a:range | let l:lines = getline(a:line1, a:line2) | endif
   if !isdirectory(l:basedir) | call mkdir(l:basedir, 'p') | endif
   execute a:command l:file
   if get(g:, 'noteworthy_use_header', 1) && getfsize(l:file) <= 0

@@ -1,8 +1,8 @@
 # Noteworthy
 Note-taking is a practice that every good developer should employ, so why should
 the process be tedious? Noteworthy provides a very quick and painless way to
-create and open notes that are kept in predefined places. Works with both static
-and project-specific libraries.
+create, open, and search through notes that are kept in predefined places. Works
+with both static and project-specific libraries.
 
 ## Table of Contents
 - [Installation](#installation)

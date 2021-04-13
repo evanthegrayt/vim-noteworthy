@@ -4,30 +4,6 @@ the process be tedious? Noteworthy provides a very quick and painless way to
 create, open, and search through notes that are kept in predefined places. Works
 with both static and project-specific libraries.
 
-## Table of Contents
-- [Installation](#installation)
-- [Usage](#usage)
-  - [Setup](#setup)
-    - [Defining library locations](#defining-library-locations)
-      - [Project-specific/dynamic libraries](#project-specificdynamic-libraries)
-    - [Header generation](#header-generation)
-    - [Custom header](#custom-header)
-    - [Changing the default file extension](#changing-the-default-file-extension)
-    - [Allow any file extension in tab-completion](#allow-any-file-extension-in-tab-completion)
-    - [Set the default file name delimiter](#set-the-default-file-name-delimiter)
-    - [Change the default window height for splits](#change-the-default-window-height-for-splits)
-    - [Change the default window width for vsplits](#change-the-default-window-width-for-vsplits)
-  - [Commands](#commands)
-    - [Create or edit a note](#create-or-edit-a-note)
-    - [Searching the current library](#searching-the-current-library)
-    - [Listing and changing libraries](#listing-and-changing-libraries)
-    - [Changing the file extension](#changing-the-file-extension)
-    - [Changing tab-completion globbing](#changing-tab-completion-globbing)
-    - [Change the file name delimiter](#change-the-file-name-delimiter)
-  - [Tips and recommended plugins](#tips-and-recommended-plugins)
-- [Issues and Feature Requests](#issues-and-feature-requests)
-- [Self-Promotion](#self-promotion)
-
 ## Installation
 I recommend using a modern version of `vim` (version 8.0 or higher) and
 cloning the repository in a package directory.

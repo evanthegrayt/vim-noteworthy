@@ -33,10 +33,26 @@ function! noteworthy#LibraryCompletion(...) abort
   return join(keys(g:noteworthy_libraries), "\n")
 endfunction
 
+function! noteworthy#Init() abort
+  if exists('g:noteworthy_dynamic_libraries')
+    augroup noteworthy
+      autocmd!
+      autocmd VimEnter,BufRead,DirChanged * call s:HandleDynamicLibraries()
+    augroup END
+  endif
+  let l:cache_file = s:GetCacheFile()
+  if filereadable(l:cache_file)
+    let l:library = readfile(l:cache_file)[0]
+    if has_key(g:noteworthy_libraries, l:library)
+      silent call noteworthy#Library(0, l:library)
+    endif
+  endif
+endfunction
+
 ""
 " Adds the dynamic library to the list of libraries. If preferred, will
 " automatically set current library to the dynamic library.
-function! noteworthy#HandleDynamicLibraries() abort
+function! s:HandleDynamicLibraries() abort
   if has_key(g:noteworthy_dynamic_libraries, getcwd())
     let g:noteworthy_libraries[s:DynamicLibraryName()] =
           \ g:noteworthy_dynamic_libraries[getcwd()]
@@ -67,15 +83,23 @@ endfunction
 ""
 " Call for :NoteLibrary. Decides if we're getting or setting, and calls the
 " appropriate function.
-function! noteworthy#Library(bang, ...) abort
+function! noteworthy#Library(cache, ...) abort
   if !s:Validate() | return | endif
   if a:0
     if !s:SetCurrentLibrary(a:1) | return | endif
     let l:msg = 'Setting library to "' . a:1 . '"'
-    if a:bang | let l:msg .= ' (' . g:noteworthy_libraries[a:1] . ')' | endif
+    if a:cache || get(g:, 'noteworthy_auto_cache_library')
+      if a:1 == s:DynamicLibraryName()
+        call s:Warn("Caching dynamic library.")
+      endif
+      call s:CacheLibrary(a:1)
+    endif
   else
     let l:msg = 'Current library is set to "' . s:GetCurrentLibrary() . '"'
-    if a:bang | let l:msg .= ' ('. s:GetCurrentDirectory() . ')' | endif
+    if a:cache
+      let l:file = s:GetCacheFile()
+      if filereadable(l:file) | call delete(l:file) | endif
+    endif
   endif
   echo l:msg
 endfunction
@@ -186,7 +210,14 @@ function! s:File(command, segments, range, line1, line2) abort
   let l:fext = s:GetNoteFileExt()
   let l:file = s:GetFileName(a:segments, l:delim)
   let l:basedir = fnamemodify(l:file, ':h')
-  if a:range | let l:lines = getline(a:line1, a:line2) | endif
+  if a:range
+    let l:lines = getline(a:line1, a:line2)
+    let l:indent_level = s:GetIndentLevel(l:lines)
+    if get(g:, 'noteworthy_use_code_block', 1)
+      let l:callback = "substitute(v:val, '\\s\\{" . l:indent_level . "}', '', '')"
+      let l:lines = ['```' . &ft] + map(l:lines, l:callback) + ['```']
+    endif
+  endif
   if !isdirectory(l:basedir) | call mkdir(l:basedir, 'p') | endif
   execute a:command l:file
   if get(g:, 'noteworthy_use_header', 1) && getfsize(l:file) <= 0
@@ -241,4 +272,27 @@ endfunction
 
 function! s:DynamicLibraryName() abort
   return get(g:, 'noteworthy_dynamic_library_name', 'dynamic')
+endfunction
+
+function! s:CacheLibrary(library) abort
+  let l:file =  s:GetCacheFile()
+  let l:dir = fnamemodify(l:file, ':h')
+  if !isdirectory(l:dir) | call mkdir(l:dir, 'p') | endif
+  let l:text = [a:library]
+  call writefile(l:text, l:file)
+endfunction
+
+function! s:GetCacheFile() abort
+  return get(
+        \   g:, 'noteworthy_cache_dir', $HOME . '/.cache/noteworthy'
+        \ ) . '/notelibrary.txt'
+endfunction
+
+function! s:GetIndentLevel(lines) abort
+  let l:indent_levels = []
+  for l:string in a:lines
+    if empty(trim(l:string)) | continue | endif
+    call add(l:indent_levels, match(l:string, '^\s*\zs'))
+  endfor
+  return min(l:indent_levels)
 endfunction

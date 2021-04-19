@@ -1,29 +1,29 @@
 ""
 " Open/create a note.
-function! noteworthy#Note(range, line1, line2, ...) abort
-  call s:File('edit', a:000, a:range, a:line1, a:line2)
+function! noteworthy#Note(range, line1, line2, file) abort
+  call s:File('edit', a:file, a:range, a:line1, a:line2)
 endfunction
 
 ""
 " Open/create a note in a new tab.
-function! noteworthy#Tnote(range, line1, line2, ...) abort
-  call s:File('tabedit', a:000, a:range, a:line1, a:line2)
+function! noteworthy#Tnote(range, line1, line2, file) abort
+  call s:File('tabedit', a:file, a:range, a:line1, a:line2)
 endfunction
 
 ""
 " Open/create a note in a new split.
-function! noteworthy#Snote(range, line1, line2, ...) abort
+function! noteworthy#Snote(range, line1, line2, file) abort
   call s:File(get(
         \   g:, 'noteworthy_split_size', ''
-        \ ) . 'split', a:000, a:range, a:line1, a:line2)
+        \ ) . 'split', a:file, a:range, a:line1, a:line2)
 endfunction
 
 ""
 " Open/create a note in a new vertical split.
-function! noteworthy#Vnote(range, line1, line2, ...) abort
+function! noteworthy#Vnote(range, line1, line2, file) abort
   call s:File(get(
         \   g:, 'noteworthy_vsplit_size', ''
-        \ ) . 'vsplit', a:000, a:range, a:line1, a:line2)
+        \ ) . 'vsplit', a:file, a:range, a:line1, a:line2)
 endfunction
 
 ""
@@ -205,10 +205,10 @@ endfunction
 
 ""
 " Create or open a note in the current library.
-function! s:File(command, segments, range, line1, line2) abort
+function! s:File(command, file, range, line1, line2) abort
   let l:delim = s:GetNoteDelimiter()
   let l:fext = s:GetNoteFileExt()
-  let l:file = s:GetFileName(a:segments, l:delim)
+  let l:file = s:GetFileName(a:file, l:delim, 1)
   let l:basedir = fnamemodify(l:file, ':h')
   if a:range
     let l:lines = getline(a:line1, a:line2)
@@ -230,15 +230,20 @@ function! s:File(command, segments, range, line1, line2) abort
   endif
 endfunction
 
-function! s:GetFileName(segments, delim) abort
+function! s:GetFileName(file, delim, directory) abort
+  let l:segments = split(a:file)
   let l:dir = s:GetCurrentDirectory()
   let l:fext = s:GetNoteFileExt()
   let l:regex = a:delim . '*\/' . a:delim . '*'
-  let l:file = substitute(tolower(join(a:segments, a:delim)), l:regex, '/', 'g')
+  let l:file = substitute(tolower(join(l:segments, a:delim)), l:regex, '/', 'g')
+  let l:file = substitute(l:file, '_\.' . l:fext . '$', '.' . l:fext, '')
   if !get(g:, 'noteworthy_ambiguous') && l:file !~# '\.' . l:fext . '$'
     let l:file .= '.' . l:fext
   endif
-  return l:dir . l:file
+  if a:directory
+    let l:file = l:dir . l:file
+  endif
+  return l:file
 endfunction
 
 function! s:GetFormattedTitle(title) abort

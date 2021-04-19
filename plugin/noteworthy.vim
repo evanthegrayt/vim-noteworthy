@@ -5,16 +5,16 @@ let g:loaded_noteworthy = 1
 
 call noteworthy#Init()
 
-command! -nargs=+ -range=0 -complete=custom,noteworthy#Completion Note
+command! -range=0 -nargs=1 -complete=custom,noteworthy#Completion Note
       \ call noteworthy#Note(<range>, <line1>, <line2>, <f-args>)
 
-command! -range=0 -nargs=+ -complete=custom,noteworthy#Completion Vnote
+command! -range=0 -nargs=1 -complete=custom,noteworthy#Completion Vnote
       \ call noteworthy#Vnote(<range>, <line1>, <line2>, <f-args>)
 
-command! -range=0 -nargs=+ -complete=custom,noteworthy#Completion Snote
+command! -range=0 -nargs=1 -complete=custom,noteworthy#Completion Snote
       \ call noteworthy#Snote(<range>, <line1>, <line2>, <f-args>)
 
-command! -range=0 -nargs=+ -complete=custom,noteworthy#Completion Tnote
+command! -range=0 -nargs=1 -complete=custom,noteworthy#Completion Tnote
       \ call noteworthy#Tnote(<range>, <line1>, <line2>, <f-args>)
 
 command! -bang -nargs=? -complete=custom,noteworthy#LibraryCompletion NoteLibrary

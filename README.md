@@ -188,7 +188,9 @@ Any one of the above commands will open a file called
 `rails/remember_this_about_rails.md` in your current library.
 
 If called with a range (or a visual selection), the corresponding lines of your
-current file will be appended to the note being edited.
+current file will be appended to the note being edited. By default, the copied
+text will be wrapped in a markdown code block with the file type. This can be
+disabled by setting `g:noteworthy_use_code_block = 0`.
 
 Note that `:Snote`, `:Vnote`, and `:Tnote` commands also exist. They behave the
 same as `:Note`, except they open the note in a split, vertical split, and new
@@ -220,7 +222,15 @@ available libraries.
 :NoteLibrary work
 ```
 
-To also see the path of the library, use `:NoteLibrary!` (with a bang).
+When called with a `!` and a library, that library is cached so that next time
+vim is opened, it will be the current library being used. When called with `!`
+and no library, the cache is cleared. The directory used to store the cache is
+`~/.cache/noteworthy` by default. This can be changed with
+`g:noteworthy_cache_dir`.
+
+```vim
+let g:noteworthy_cache_dir = $HOME . '/.vim/cache/noteworthy'
+```
 
 #### Changing the file extension
 To change the file extension being used for note creation and tab-completion

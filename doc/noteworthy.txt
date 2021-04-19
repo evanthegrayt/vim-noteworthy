@@ -33,7 +33,9 @@ Setup ........................................ |noteworthy-setup|
   Set the default file name delimiter ........ |g:noteworthy_delimiter|
   Change default window height for splits .... |g:noteworthy_split_size|
   Change default window width for vsplits .... |g:noteworthy_vsplit_size|
-  Considerations for project-specific notes .. |noteworthy-project-specific|
+  Use code block when copying range .......... |g:noteworthy_use_code_block|
+  Automatically cache :NoteLibrary ........... |g:noteworthy_auto_cache_library|
+  Change the cache directory ................. |g:noteworthy_cache_dir|
 Commands ..................................... |noteworthy-commands|
   Create or open a note ...................... |Note|
   Create or open a note in a split ........... |Snote|
@@ -206,44 +208,24 @@ this variable will be overridden.
     let g:noteworthy_vsplit_size = 80
 <
 
-                                                   *noteworthy-project-specific*
-If you want project-specific notes to be kept with your projects, and you use
-the same directory for notes in each project (for example, "doc/notes" in a
-Rails project), you can use a relative file path. Just make sure you open vim in
-the root of the project, or use a plugin like
-Rooter (https://github.com/airblade/vim-rooter).
+                                                   *g:noteworthy_use_code_block*
+When a note is created or opened with a range (or visual selection), the text
+in that range will be copied to the note, wrapped in a markdown code block. To
+disable the code block being generated, set the this variable to false.
 >
-    let g:noteworthy_libraries = {
-        \   'personal': $HOME . '/notes',
-        \   'project':  'doc/notes',
-        \ }
+    let g:noteworthy_use_code_block = 0
 <
 
-Optionally, set default to project-specific directory, if in a project.
+                                               *g:noteworthy_auto_cache_library*
+Automatically cache the library when |:NoteLibrary| is called.
 >
-    if isdirectory(g:noteworthy_libraries.project)
-      let g:noteworthy_default_library = 'project'
-    else
-      let g:noteworthy_default_library = 'personal'
-    endif
+    let g:noteworthy_auto_cache_library = 1
 <
 
-If you don't follow a convention, and you use a different directory for notes in
-each project, you could use set 'exrc' in your main vimrc file, and keep a
-project-specific ".vimrc" file in the root of each project that sets the library
-for that project. This would look similar to the following.
-
-In "~/.vimrc" or "~/.vim/vimrc"
+                                                        *g:noteworthy_cache_dir*
+Change where cache files are kept.
 >
-    set exrc
-    set secure
-<
-
-In the root of the project, in a file named .vimrc
->
-    if !exists('g:noteworthy_libraries') | let g:noteworthy_libraries = {} | endif
-    let g:noteworthy_libraries.project = 'doc/notes'
-    let g:noteworthy_default_library = 'project' " Optional.
+    let g:noteworthy_cache_dir = $HOME . '/.vim/cache/noteworthy'
 <
 
 ================================================================================
@@ -259,7 +241,9 @@ COMMANDS                                                   *noteworthy-commands*
                             will be replaced by underscores in the file name.
                             If [{range}] is provided (works with visual
                             selection), the lines of the current file will be
-                            appended to the note.
+                            appended to the note. By default, the copied text
+                            will be wrapped in a markdown code block. To
+                            disable this, see |g:noteworthy_use_code_block|.
 
                                                                 *Snote* *:Snote*
 :[{range}]Snote {topic} [{, ...}]
@@ -291,8 +275,15 @@ COMMANDS                                                   *noteworthy-commands*
 :NoteLibrary[!] [{library}] Switch to {library}, which should be a key of
                             |g:noteworthy_libraries|. If {library} is not
                             provided, the current library being used will be
-                            displayed. If [!] is supplied, also lists the file
-                            path of the library.
+                            displayed. If [!] is supplied with a {library},
+                            that library will be cached, so next time vim is
+                            opened, it will be used as the default library.
+                            Calling with [!] and no {library} clears this
+                            cache. To automatically cache every time the
+                            command is used, see
+                            |g:noteworthy_auto_cache_library|. The cache
+                            directory is "~/.cache/noteworthy". To change it,
+                            see |g:noteworthy_cache_dir|.
 
                                                 *NoteExtension* *:NoteExtension*
 :NoteExtension [{ext}]      Change the file extension being used when creating a

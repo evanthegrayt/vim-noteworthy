@@ -3,12 +3,7 @@ if exists('g:loaded_noteworthy') || &cp
 endif
 let g:loaded_noteworthy = 1
 
-if exists('g:noteworthy_dynamic_libraries')
-  augroup noteworthy
-    autocmd!
-    autocmd VimEnter,BufRead,DirChanged * call noteworthy#HandleDynamicLibraries()
-  augroup END
-endif
+call noteworthy#Init()
 
 command! -nargs=+ -range=0 -complete=custom,noteworthy#Completion Note
       \ call noteworthy#Note(<range>, <line1>, <line2>, <f-args>)

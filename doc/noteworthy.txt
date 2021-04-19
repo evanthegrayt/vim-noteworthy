@@ -233,29 +233,28 @@ Change where cache files are kept.
 COMMANDS                                                   *noteworthy-commands*
 
                                                                   *Note* *:Note*
-:[{range}]Note {topic} [{, ...}]
-                            Create new {topic} markdown file in the
+:[{range}]Note [{topic}]    Create new {topic} markdown file in the
                             |b:noteworthy_current_library|, or open it if it
                             already exists. The file extension can be omitted.
                             Can be multiple words separated by spaces, which
                             will be replaced by underscores in the file name.
-                            If [{range}] is provided (works with visual
-                            selection), the lines of the current file will be
-                            appended to the note. By default, the copied text
-                            will be wrapped in a markdown code block. To
-                            disable this, see |g:noteworthy_use_code_block|.
+                            If {topic} is not provided, a scratch buffer will
+                            be created, which can't be saved, and will be
+                            deleted once the window is closed. If {range} is
+                            provided (works with visual selection), the lines
+                            of the current file will be appended to the note.
+                            By default, the copied text will be wrapped in a
+                            markdown code block. To disable this, see
+                            |g:noteworthy_use_code_block|.
 
                                                                 *Snote* *:Snote*
-:[{range}]Snote {topic} [{, ...}]
-                            Same as |:Note|, but opens in a split.
+:[{range}]Snote [{topic}]   Same as |:Note|, but opens in a split.
 
                                                                 *Vnote* *:Vnote*
-:[{range}]Vnote {topic} [{, ...}]
-                            Same as |:Note|, but opens in a vertical split.
+:[{range}]Vnote [{topic}]   Same as |:Note|, but opens in a vertical split.
 
                                                                 *Tnote* *:Tnote*
-:[{range}]Tnote {topic} [{, ...}]
-                            Same as |:Note|, but opens in new tab.
+:[{range}]Tnote [{topic}]   Same as |:Note|, but opens in new tab.
 
 
                                                       *NoteSearch* *:NoteSearch*

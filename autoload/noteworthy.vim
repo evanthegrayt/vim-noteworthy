@@ -1,29 +1,29 @@
 ""
 " Open/create a note.
-function! noteworthy#Note(range, line1, line2, file) abort
-  call s:File('edit', a:file, a:range, a:line1, a:line2)
+function! noteworthy#Note(range, line1, line2, ...) abort
+  call s:File('edit', a:range, a:line1, a:line2, a:000)
 endfunction
 
 ""
 " Open/create a note in a new tab.
-function! noteworthy#Tnote(range, line1, line2, file) abort
-  call s:File('tabedit', a:file, a:range, a:line1, a:line2)
+function! noteworthy#Tnote(range, line1, line2, ...) abort
+  call s:File('tabedit', a:range, a:line1, a:line2, a:000)
 endfunction
 
 ""
 " Open/create a note in a new split.
-function! noteworthy#Snote(range, line1, line2, file) abort
+function! noteworthy#Snote(range, line1, line2, ...) abort
   call s:File(get(
         \   g:, 'noteworthy_split_size', ''
-        \ ) . 'split', a:file, a:range, a:line1, a:line2)
+        \ ) . 'split', a:range, a:line1, a:line2, a:000)
 endfunction
 
 ""
 " Open/create a note in a new vertical split.
-function! noteworthy#Vnote(range, line1, line2, file) abort
+function! noteworthy#Vnote(range, line1, line2, ...) abort
   call s:File(get(
         \   g:, 'noteworthy_vsplit_size', ''
-        \ ) . 'vsplit', a:file, a:range, a:line1, a:line2)
+        \ ) . 'vsplit', a:range, a:line1, a:line2, a:000)
 endfunction
 
 ""
@@ -205,11 +205,18 @@ endfunction
 
 ""
 " Create or open a note in the current library.
-function! s:File(command, file, range, line1, line2) abort
+function! s:File(command, range, line1, line2, file) abort
   let l:delim = s:GetNoteDelimiter()
   let l:fext = s:GetNoteFileExt()
-  let l:file = s:GetFileName(a:file, l:delim, 1)
-  let l:basedir = fnamemodify(l:file, ':h')
+  if empty(a:file)
+    let l:file = '__Scratch_Note__.' . l:fext
+    let l:type = 'scratch'
+  else
+    let l:file = s:GetFileName(a:file[0], l:delim, 1)
+    let l:basedir = fnamemodify(l:file, ':h')
+    if !isdirectory(l:basedir) | call mkdir(l:basedir, 'p') | endif
+    let l:type = 'note'
+  endif
   if a:range
     let l:lines = getline(a:line1, a:line2)
     let l:indent_level = s:GetIndentLevel(l:lines)
@@ -218,10 +225,18 @@ function! s:File(command, file, range, line1, line2) abort
       let l:lines = ['```' . &ft] + map(l:lines, l:callback) + ['```']
     endif
   endif
-  if !isdirectory(l:basedir) | call mkdir(l:basedir, 'p') | endif
-  execute a:command l:file
-  if get(g:, 'noteworthy_use_header', 1) && getfsize(l:file) <= 0
-    let l:title = substitute(fnamemodify(l:file, ':t:r'), l:delim, ' ', 'g')
+  let l:buf_nr = bufnr(l:file)
+  if l:buf_nr == -1
+    execute a:command l:file
+    if l:type ==# 'scratch' | call s:SetScratchOptions() | endif
+  else
+    let l:win_nr = bufwinnr(l:buf_nr)
+    if l:win_nr != -1
+      if winnr() != l:win_nr | execute l:win_nr . 'wincmd w' | endif
+    endif
+  endif
+  if get(g:, 'noteworthy_use_header', 1) && getfsize(l:file) <= 0 && empty(getline(1))
+    let l:title = trim(substitute(fnamemodify(l:file, ':t:r'), l:delim, ' ', 'g'))
     call append(0, s:GetFormattedTitle(l:title))
   endif
   if exists('l:lines')
@@ -280,7 +295,7 @@ function! s:DynamicLibraryName() abort
 endfunction
 
 function! s:CacheLibrary(library) abort
-  let l:file =  s:GetCacheFile()
+  let l:file = s:GetCacheFile()
   let l:dir = fnamemodify(l:file, ':h')
   if !isdirectory(l:dir) | call mkdir(l:dir, 'p') | endif
   let l:text = [a:library]
@@ -300,4 +315,14 @@ function! s:GetIndentLevel(lines) abort
     call add(l:indent_levels, match(l:string, '^\s*\zs'))
   endfor
   return min(l:indent_levels)
+endfunction
+
+function! s:SetScratchOptions() abort
+  setlocal bufhidden=hide
+  setlocal buftype=nofile
+  setlocal foldcolumn=0
+  setlocal nobuflisted
+  setlocal nofoldenable
+  setlocal nonumber
+  setlocal noswapfile
 endfunction

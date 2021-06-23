@@ -85,27 +85,25 @@ let g:noteworthy_use_header = 0
 ```
 
 #### Custom header
-If you want to define your own header-making command, you can create a string
-containing commands to be `eval`'d and used as the header. For example, if you
-want the title to be all upper-case instead of the default upper-case.
+If you want to define your own header-making function, you can define a function
+called `NotewothyHeader` that takes two arguments -- `title` and `file` -- which
+will resolve to the base file name with any extension removed and underscores
+replaced by spaces, and the full file path to the current note, respectively. In
+other words, if the current library is `/Users/me/notes`, and the note is
+`things_to_remember.md`, then `title` would resolve to `things to remember`, and
+`file` would resolve to `/Users/me/notes/things_to_remember.md`.
 
 ```vim
-let g:noteworthy_header_command = "'# ' . toupper(title)"
+function! NoteworthyHeader(title, file) abort
+  return '# ' . toupper(a:title)
+endfunction
 ```
 
-This would make the header look like:
+This would make the header look like the following.
 
 ```markdown
 # REMEMBER THIS
 ```
-
-Note that you have access to the variables `file` and `title`, which will
-resolve to the full file path to the current note, and the base file name with
-any extension removed and underscores replaced by spaces, respectively. In other
-words, if the current library is `/Users/me/notes`, and the note is
-`things_to_remember.md`, then `file` would resolve to
-`/Users/me/notes/things_to_remember.md`, and `title` would resolve to `things
-to remember`.
 
 #### Changing the default file extension
 

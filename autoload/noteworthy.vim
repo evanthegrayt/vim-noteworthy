@@ -68,38 +68,10 @@ function! noteworthy#Open(command, file, range, line1, line2) abort
 endfunction
 
 ""
-" The size the split should be based on the command.
-function! s:SplitSize(command) abort
-  let l:dict = {'vsplit': s:app.vsplit_size, 'split': s:app.split_size}
-  if !has_key(l:dict, a:command) | return '' | endif
-  return l:dict[a:command]
-endfunction
-
-""
 " Completion for :NoteLibrary
 function! noteworthy#LibraryCompletion(...) abort
   if !s:app.validate() | return '' | endif
   return join(keys(s:app.libraries), "\n")
-endfunction
-
-""
-" Adds the dynamic library to the list of libraries. If preferred, will
-" automatically set current library to the dynamic library.
-function! s:HandleDynamicLibraries() abort
-  if has_key(s:app.dynamic_libraries, getcwd())
-    let s:app.libraries[s:app.dynamic_library_name] =
-          \ s:app.dynamic_libraries[getcwd()]
-    if s:app.prefer_dynamic
-      let s:app.current_library = s:app.dynamic_library_name
-    endif
-  else
-    if s:app.current_library == s:app.dynamic_library_name
-      unlet! s:app.current_library
-    endif
-    if has_key(s:app.libraries, s:app.dynamic_library_name)
-      unlet s:app.libraries[s:app.dynamic_library_name]
-    endif
-  endif
 endfunction
 
 ""
@@ -182,6 +154,34 @@ function! noteworthy#Delimiter(...) abort
 endfunction
 
 " PRIVATE API
+
+""
+" The size the split should be based on the command.
+function! s:SplitSize(command) abort
+  let l:dict = {'vsplit': s:app.vsplit_size, 'split': s:app.split_size}
+  if !has_key(l:dict, a:command) | return '' | endif
+  return l:dict[a:command]
+endfunction
+
+""
+" Adds the dynamic library to the list of libraries. If preferred, will
+" automatically set current library to the dynamic library.
+function! s:HandleDynamicLibraries() abort
+  if has_key(s:app.dynamic_libraries, getcwd())
+    let s:app.libraries[s:app.dynamic_library_name] =
+          \ s:app.dynamic_libraries[getcwd()]
+    if s:app.prefer_dynamic
+      let s:app.current_library = s:app.dynamic_library_name
+    endif
+  else
+    if s:app.current_library == s:app.dynamic_library_name
+      unlet! s:app.current_library
+    endif
+    if has_key(s:app.libraries, s:app.dynamic_library_name)
+      unlet s:app.libraries[s:app.dynamic_library_name]
+    endif
+  endif
+endfunction
 
 function! s:GetFileName(file, delim, directory) abort dict
   let l:segments = split(a:file)

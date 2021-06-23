@@ -27,8 +27,8 @@ Setup ........................................ |noteworthy-setup|
   Change name of dynamic library ............. |g:noteworthy_dynamic_library_name|
   Prefer dynamic libraries when available .... |g:noteworthy_prefer_dynamic|
   Setting file extension for notes ........... |g:noteworthy_file_ext|
-  Using the default header ................... |g:noteworthy_use_header|
-  Setting a custom header .................... |g:noteworthy_header_command|
+  Automatically generate a header ............ |g:noteworthy_use_header|
+  Setting a custom header .................... |NoteworthyHeader()|
   Allow any file extension in tab completion . |g:noteworthy_ambiguous|
   Set the default file name delimiter ........ |g:noteworthy_delimiter|
   Change default window height for splits .... |g:noteworthy_split_size|
@@ -137,28 +137,25 @@ To disable this behavior, set this in your vimrc.
     let g:noteworthy_use_header = 0
 <
 
-                                                   *g:noteworthy_header_command*
+                                                            *NoteworthyHeader()*
 Setting a custom header~
 
-If you want to define your own command, you can create a string containing
-commands to be parsed by |eval()| and used as the header. For example, if you
-want the title to be upper-case instead of the default upper-case.
+If you want to define your own header-making function, you can define a function
+called "NotewothyHeader" that takes two arguments -- "title" and "file" -- which
+will resolve to the base file name with any extension removed and underscores
+replaced by spaces, and the full file path to the current note, respectively. In
+other words, if the current library is "/Users/me/notes", and the note is
+"things_to_remember.md", then "title" would resolve to "things to remember", and
+"file" would resolve to "/Users/me/notes/things_to_remember.md".
 >
-    let g:noteworthy_header_command = "'# ' . toupper(title)"
+    function! NoteworthyHeader(title, file) abort
+      return '# ' . toupper(a:title)
+    endfunction
 <
-This would make the header look like:
+This would make the header look like the following.
 >
     # REMEMBER THIS
 <
-Note that you have access to the variables "file" and "title", which will
-resolve to the full file path to the current note, and the base file name with
-any extension removed and underscores replaced by spaces, respectively.
-
-In other words, if the current library is "/Users/me/notes", and the note is
-"things_to_remember.md", then "file" would resolve to
-"/Users/me/notes/things_to_remember.md", and "title" would resolve to "things
-to remember".
-
                                                         *g:noteworthy_ambiguous*
 Allow any file extension in tab completion~
 

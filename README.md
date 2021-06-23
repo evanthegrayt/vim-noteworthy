@@ -86,7 +86,7 @@ let g:noteworthy_use_header = 0
 
 #### Custom header
 If you want to define your own header-making function, you can define a function
-called `NotewothyHeader` that takes two arguments -- `title` and `file` -- which
+called `NoteworthyHeader` that takes two arguments -- `title` and `file` -- which
 will resolve to the base file name with any extension removed and underscores
 replaced by spaces, and the full file path to the current note, respectively. In
 other words, if the current library is `/Users/me/notes`, and the note is

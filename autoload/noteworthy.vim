@@ -55,7 +55,7 @@ function! noteworthy#Open(command, file, range, line1, line2) abort
     endif
   endif
   if !isdirectory(l:basedir) | call mkdir(l:basedir, 'p') | endif
-  execute s:SplitSize(a:command) . a:command l:file
+  execute get(s:app, a:command . '_size', '') . a:command l:file
   if s:app.use_header && getfsize(l:file) <= 0
     let l:title = substitute(fnamemodify(l:file, ':t:r'), s:app.delimiter, ' ', 'g')
     let l:func = exists('*NoteworthyHeader') ? 'NoteworthyHeader' : 's:Header'
@@ -154,14 +154,6 @@ function! noteworthy#Delimiter(...) abort
 endfunction
 
 " PRIVATE API
-
-""
-" The size the split should be based on the command.
-function! s:SplitSize(command) abort
-  let l:dict = {'vsplit': s:app.vsplit_size, 'split': s:app.split_size}
-  if !has_key(l:dict, a:command) | return '' | endif
-  return l:dict[a:command]
-endfunction
 
 ""
 " Adds the dynamic library to the list of libraries. If preferred, will

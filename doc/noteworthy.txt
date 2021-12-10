@@ -37,16 +37,16 @@ Setup ........................................ |noteworthy-setup|
   Automatically cache :NoteLibrary ........... |g:noteworthy_auto_cache_library|
   Change the cache directory ................. |g:noteworthy_cache_dir|
 Commands ..................................... |noteworthy-commands|
-  Create or open a note ...................... |Note|
-  Create or open a note in a split ........... |Snote|
-  Create or open a note in a vertical split .. |Vnote|
-  Create or open a note in a new tab ......... |Tnote|
-  Search the current library ................. |NoteSearch|
-  List or change library ..................... |NoteLibrary|
-  List or change the current note extension .. |NoteExtension|
-  Allow any file extension in tab completion . |NoteAmbiguousEnable|
-  Restrict file extensions in tab completion . |NoteAmbiguousDisable|
-  Change the file name delimiter ............. |NoteDelimiter|
+  Create or open a note ...................... |:Note|
+  Create or open a note in a split ........... |:Snote|
+  Create or open a note in a vertical split .. |:Vnote|
+  Create or open a note in a new tab ......... |:Tnote|
+  Search the current library ................. |:NoteSearch|
+  List or change library ..................... |:NoteLibrary|
+  List or change the current note extension .. |:NoteExtension|
+  Allow any file extension in tab completion . |:NoteAmbiguousEnable|
+  Restrict file extensions in tab completion . |:NoteAmbiguousDisable|
+  Change the file name delimiter ............. |:NoteDelimiter|
 Tips and recommended plugins ................. |noteworthy-tips|
 
 ================================================================================
@@ -229,7 +229,7 @@ Change where cache files are kept.
 
 COMMANDS                                                   *noteworthy-commands*
 
-                                                                  *Note* *:Note*
+                                                                         *:Note*
 :[{range}]Note {topic} [{, ...}]
                             Create new {topic} markdown file in the
                             |b:noteworthy_current_library|, or open it if it
@@ -242,20 +242,20 @@ COMMANDS                                                   *noteworthy-commands*
                             will be wrapped in a markdown code block. To
                             disable this, see |g:noteworthy_use_code_block|.
 
-                                                                *Snote* *:Snote*
+                                                                        *:Snote*
 :[{range}]Snote {topic} [{, ...}]
                             Same as |:Note|, but opens in a split.
 
-                                                                *Vnote* *:Vnote*
+                                                                        *:Vnote*
 :[{range}]Vnote {topic} [{, ...}]
                             Same as |:Note|, but opens in a vertical split.
 
-                                                                *Tnote* *:Tnote*
+                                                                        *:Tnote*
 :[{range}]Tnote {topic} [{, ...}]
                             Same as |:Note|, but opens in new tab.
 
 
-                                                      *NoteSearch* *:NoteSearch*
+                                                                   *:NoteSearch*
 :NoteSearch {pattern} [{subdirectory}]
                             Search for {pattern} in the current library and
                             populate the quickfix window with the results. If
@@ -268,21 +268,22 @@ COMMANDS                                                   *noteworthy-commands*
                             is not enabled by default, but you can prepend your
                             search pattern with |\v| to enable it.
 
-                                                    *NoteLibrary* *:NoteLibrary*
+                                                                  *:NoteLibrary*
 :NoteLibrary[!] [{library}] Switch to {library}, which should be a key of
                             |g:noteworthy_libraries|. If {library} is not
                             provided, the current library being used will be
-                            displayed. If [!] is supplied with a {library},
-                            that library will be cached, so next time vim is
-                            opened, it will be used as the default library.
-                            Calling with [!] and no {library} clears this
-                            cache. To automatically cache every time the
-                            command is used, see
+                            displayed. When called with ':verbose', will also
+                            display the directory of the library. If [!] is
+                            supplied with a {library}, that library will be
+                            cached, so next time vim is opened, it will be used
+                            as the default library.  Calling with [!] and no
+                            {library} clears this cache. To automatically cache
+                            every time the command is used, see
                             |g:noteworthy_auto_cache_library|. The cache
                             directory is "~/.cache/noteworthy". To change it,
                             see |g:noteworthy_cache_dir|.
 
-                                                *NoteExtension* *:NoteExtension*
+                                                                *:NoteExtension*
 :NoteExtension [{ext}]      Change the file extension being used when creating a
                             new note or using tab-completion to {ext}. If {ext}
                             is not provided, the current extension being used
@@ -290,13 +291,13 @@ COMMANDS                                                   *noteworthy-commands*
                             enabled, this will not automatically be added to new
                             notes.
 
-                                    *NoteAmbiguousEnable* *:NoteAmbiguousEnable*
+                                                          *:NoteAmbiguousEnable*
 :NoteAmbiguousEnable        Allow any file extension in tab completion.
 
-                                  *NoteAmbiguousDisable* *:NoteAmbiguousDisable*
+                                                         *:NoteAmbiguousDisable*
 :NoteAmbiguousDisable       Disallow any file extension in tab completion.
 
-                                                *NoteDelimiter* *:NoteDelimiter*
+                                                                *:NoteDelimiter*
 :NoteDelimiter [{delim}]    Change the delimiter used to join the file name. If
                             {delim} is not passed, the current delimiter being
                             used will be displayed.

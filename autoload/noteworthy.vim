@@ -109,6 +109,7 @@ function! noteworthy#Library(cache, ...) abort
       if filereadable(s:app.cache_file) | call delete(s:app.cache_file) | endif
     endif
   endif
+  if &verbose | let l:msg .= ' [' . s:app.current_directory() . ']' | endif
   echo l:msg
 endfunction
 
@@ -121,7 +122,7 @@ function! noteworthy#Search(pattern, ...) abort
   if a:0 | let l:directory .= a:1 . '/' | endif
   let l:directory .= '**/*.' . s:app.file_extension
   try
-    exec 'vimgrep! /' . a:pattern . '/gj' . ' ' . l:directory
+    exec 'silent' 'vimgrep!' '/' . a:pattern . '/gj' l:directory
     botright copen
   catch
     call s:Error(

@@ -311,6 +311,5 @@ completions at once. You can trigger this by hitting <c-d> from command-line
 mode.
 
 If you're using Markdown as your primary file type (as is the default), I
-recommend using the Tagbar (https://github.com/preservim/tagbar) plugin with
-Tagbar Markdown (https://github.com/lvht/tagbar-markdown). This indexes the
+recommend using Tagbar (https://github.com/preservim/tagbar). This indexes the
 page by headers, and makes it much easier to navigate large note files.

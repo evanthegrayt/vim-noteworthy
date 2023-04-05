@@ -162,7 +162,8 @@ let g:noteworthy_vsplit_size = 80
 #### Create or edit a note
 Create or edit a note with `:Note SUBJECT...`. The `SUBJECT` will be used as
 the file name, and any spaces will be replaced by underscores. No file extension
-is required.
+is required. If a buffer with that note already exists, it will be reused. If
+it's already open in a window, focus will change to that window.
 
 ```
 :Note I need to remember this

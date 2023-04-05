@@ -233,22 +233,29 @@ COMMANDS                                                   *noteworthy-commands*
 :[{range}]Note {topic} [{, ...}]
                             Create new {topic} markdown file in the
                             |b:noteworthy_current_library|, or open it if it
-                            already exists. The file extension can be omitted.
-                            Can be multiple words separated by spaces, which
-                            will be replaced by underscores in the file name.
-                            If [{range}] is provided (works with visual
-                            selection), the lines of the current file will be
-                            appended to the note. By default, the copied text
-                            will be wrapped in a markdown code block. To
-                            disable this, see |g:noteworthy_use_code_block|.
+                            already exists. If a buffer with that note already
+                            exists, it will be reused. If it's already open in
+                            a window, focus will change to that window.The file
+                            extension can be omitted.  Can be multiple words
+                            separated by spaces, which will be replaced by
+                            underscores in the file name.  If [{range}] is
+                            provided (works with visual selection), the lines
+                            of the current file will be appended to the note.
+                            By default, the copied text will be wrapped in a
+                            markdown code block. To disable this, see
+                            |g:noteworthy_use_code_block|.
 
                                                                         *:Snote*
 :[{range}]Snote {topic} [{, ...}]
-                            Same as |:Note|, but opens in a split.
+                            Same as |:Note|, but opens in a split. The only
+                            difference is, if the note is already open in a
+                            window, the buffer will still be reused, but it
+                            will be opened in a new split window. Use |:Note|
+                            if you want to switch to the open window.
 
                                                                         *:Vnote*
 :[{range}]Vnote {topic} [{, ...}]
-                            Same as |:Note|, but opens in a vertical split.
+                            Same as |:Snote|, but opens in a vertical split.
 
                                                                         *:Tnote*
 :[{range}]Tnote {topic} [{, ...}]

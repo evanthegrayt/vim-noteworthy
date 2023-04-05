@@ -55,7 +55,7 @@ function! noteworthy#Open(command, file, range, line1, line2) abort
     endif
   endif
   if !isdirectory(l:basedir) | call mkdir(l:basedir, 'p') | endif
-  execute get(s:app, a:command . '_size', '') . a:command l:file
+  call s:OpenFile(l:file, a:command)
   if s:app.use_header && getfsize(l:file) <= 0
     let l:title = substitute(fnamemodify(l:file, ':t:r'), s:app.delimiter, ' ', 'g')
     let l:func = exists('*NoteworthyHeader') ? 'NoteworthyHeader' : 's:Header'
@@ -176,6 +176,15 @@ function! s:HandleDynamicLibraries() abort
   endif
 endfunction
 
+function! s:OpenFile(filename, command) abort
+  if !bufexists(a:filename) || a:command =~# 'split'
+    execute get(s:app, a:command . '_size', '') . a:command a:filename
+    return
+  endif
+  let l:win_num = bufwinnr(a:filename)
+  execute l:win_num == -1 ? 'buffer ' . bufnr(a:filename) : l:win_num . 'wincmd w'
+endfunction
+
 function! s:GetFileName(file, delim, directory) abort dict
   let l:segments = split(a:file)
   let l:dir = s:app.current_directory()
@@ -192,10 +201,6 @@ endfunction
 
 function! s:Header(title, file) abort
   return '# ' . substitute(a:title, '\<.', '\u&', 'g')
-endfunction
-
-function s:Deprecated(from, to) abort
-  call s:Warn(a:from . ' is deprecated. Use ' . a:to . 'instead.')
 endfunction
 
 function! s:Warn(message) abort

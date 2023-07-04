@@ -62,8 +62,8 @@ Declare a dictionary with keys being the library name, and values being
 absolute paths to the libraries.
 >
     let g:noteworthy_libraries = {
-          \   'general':    $HOME . '/notes',
-          \   'my_project': $HOME . '/my_project/docs/notes',
+          \   'personal': $HOME . '/notes',
+          \   'work': $HOME . '/my_project/docs/notes',
           \ }
 <
 
@@ -74,7 +74,7 @@ Declare one of the keys from |g:noteworthy_libraries| as the default library.
 This is not required, but if not set, you will need to use |:NoteLibrary| to
 set the library every time you open a new vim instance.
 >
-    let g:noteworthy_default_library = 'work'
+    let g:noteworthy_default_library = 'personal'
 <
 
                                                 *g:noteworthy_dynamic_libraries*

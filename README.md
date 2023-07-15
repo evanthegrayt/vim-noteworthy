@@ -31,7 +31,7 @@ To get started, define a dictionary of libraries and their file paths in your
 ```vim
 let g:noteworthy_libraries = {
     \   'personal': $HOME . '/notes',
-    \   'work':     $HOME . '/my_project/docs/notes',
+    \   'work': $HOME . '/my_project/docs/notes',
     \ }
 
 let g:noteworthy_default_library = 'personal'

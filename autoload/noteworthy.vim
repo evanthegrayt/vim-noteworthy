@@ -146,12 +146,12 @@ endfunction
 ""
 " Get or set the delimiter to use for file names.
 function! noteworthy#Delimiter(...) abort
-  if a:0
-    echo 'Setting delimiter to "' . a:1 . '"'
-    let s:app.delimiter = a:1
+  if !a:0
+    echo 'Current delimiter is set to "' . s:app.delimiter . '"'
     return
   endif
-  echo 'Current delimiter is set to "' . s:app.delimiter . '"'
+  echo 'Setting delimiter to "' . a:1 . '"'
+  let s:app.delimiter = a:1
 endfunction
 
 " PRIVATE API

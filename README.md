@@ -1,4 +1,4 @@
-# Noteworthy
+ #Noteworthy
 Note-taking is a practice that every good developer should employ, so why should
 the process be tedious? Noteworthy provides a very quick and painless way to
 create, open, and search through notes that are kept in predefined places. Works
@@ -90,8 +90,8 @@ called `NoteworthyHeader` that takes two arguments -- `title` and `file` -- whic
 will resolve to the base file name with any extension removed and underscores
 replaced by spaces, and the full file path to the current note, respectively. In
 other words, if the current library is `/Users/me/notes`, and the note is
-`things_to_remember.md`, then `title` would resolve to `things to remember`, and
-`file` would resolve to `/Users/me/notes/things_to_remember.md`.
+`remember_this.md`, then `title` would resolve to `remember this`, and
+`file` would resolve to `/Users/me/notes/remember_this.md`.
 
 ```vim
 function! NoteworthyHeader(title, file) abort
@@ -139,6 +139,8 @@ something different, set the following variable in your `vimrc`.
 ```vim
 let g:noteworthy_delimiter = '-'
 ```
+
+This would name the file `something-to-remember.md`.
 
 #### Change the default window height for splits
 

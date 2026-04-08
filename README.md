@@ -22,11 +22,15 @@ Generate and view the help from within vim.
 :help noteworthy
 ```
 
+Otherwise, use your package manager of choice, or copy the `.vim` files into
+their corresponding directories in `$HOME/.vim/`.
+
 ## Usage
 ### Setup
 #### Defining library locations
-To get started, define a dictionary of libraries and their file paths in your
-`vimrc`, and tell it which is the default to use.
+To get started, define a dictionary of library names and their file paths in
+your `vimrc`, and tell it which is the default. The names can be any single-word
+string you want; it will only be used when switching libraries.
 
 ```vim
 let g:noteworthy_libraries = {
@@ -37,9 +41,14 @@ let g:noteworthy_libraries = {
 let g:noteworthy_default_library = 'personal'
 ```
 
+With the above configuration, when you start vim, the library will be set to
+`personal`, and you would switch to the "work" library by calling `NoteLibrary
+work`.
+
 ##### Project-specific/dynamic libraries
-You can define a dictionary of directories and their corresponding relative
-library locations.
+You can define a dictionary of paths and their corresponding relative library
+locations. This is useful for things like code repositories that have a
+documentation directory.
 
 ```vim
 let g:noteworthy_dynamic_libraries = {
@@ -48,12 +57,13 @@ let g:noteworthy_dynamic_libraries = {
       \ }
 ```
 
-When a file is opened, and the current directory is a key in
-this dictionary, that library will be accessible with `:NoteLibrary dynamic`.
-The name `dynamic` can be changed with `g:noteworthy_dynamic_library_name`.
+When the current path is a key in this dictionary, that library will be
+accessible via `:NoteLibrary dynamic`. The name `dynamic` can be changed with
+`g:noteworthy_dynamic_library_name`. This allows you to change between projects
+and always be able to open the relevant documentation with the same command.
 
 ```vim
-" To make the dynamic library callable with `:NoteLibrary project`
+" To make the dynamic library available via `:NoteLibrary project`
 let g:noteworthy_dynamic_library_name = 'project'
 ```
 

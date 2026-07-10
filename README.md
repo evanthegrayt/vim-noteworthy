@@ -97,10 +97,10 @@ let g:noteworthy_use_header = 0
 #### Custom header
 If you want to define your own header-making function, you can define a function
 called `NoteworthyHeader` that takes two arguments -- `title` and `file` -- which
-will resolve to the base file name with any extension removed and underscores
+will resolve to the note title with any extension removed and delimiters
 replaced by spaces, and the full file path to the current note, respectively. In
-other words, if the current library is `/Users/me/notes`, and the note is
-`remember_this.md`, then `title` would resolve to `remember this`, and
+other words, if the current library is `/Users/me/notes`, and you run
+`:Note remember_this.md`, then `title` would resolve to `remember this`, and
 `file` would resolve to `/Users/me/notes/remember_this.md`.
 
 ```vim
@@ -173,9 +173,10 @@ let g:noteworthy_vsplit_size = 80
 ### Commands
 #### Create or edit a note
 Create or edit a note with `:Note SUBJECT...`. The `SUBJECT` will be used as
-the file name, and any spaces will be replaced by underscores. No file extension
-is required. If a buffer with that note already exists, it will be reused. If
-it's already open in a window, focus will change to that window.
+the file name, any spaces will be replaced by underscores, and special
+character runs will be replaced by the same delimiter. No file extension is
+required. If a buffer with that note already exists, it will be reused. If it's
+already open in a window, focus will change to that window.
 
 ```
 :Note I need to remember this

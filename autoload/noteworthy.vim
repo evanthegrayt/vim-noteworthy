@@ -45,6 +45,7 @@ endfunction
 " Create or open a note in the current library.
 function! noteworthy#Open(command, file, range, line1, line2) abort
   let l:file = s:app.file_name(a:file, s:app.delimiter, 1)
+  let l:title = s:GetTitle(a:file)
   let l:basedir = fnamemodify(l:file, ':h')
   if a:range
     let l:lines = getline(a:line1, a:line2)
@@ -57,7 +58,6 @@ function! noteworthy#Open(command, file, range, line1, line2) abort
   if !isdirectory(l:basedir) | call mkdir(l:basedir, 'p') | endif
   call s:OpenFile(l:file, a:command)
   if s:app.use_header && getfsize(l:file) <= 0
-    let l:title = substitute(fnamemodify(l:file, ':t:r'), s:app.delimiter, ' ', 'g')
     let l:func = exists('*NoteworthyHeader') ? 'NoteworthyHeader' : 's:Header'
     call append(0, call(l:func, [l:title, l:file]))
   endif
@@ -189,18 +189,47 @@ function! s:GetFileName(file, delim, directory) abort dict
   let l:segments = split(a:file)
   let l:dir = s:app.current_directory()
   let l:fext = s:app.file_extension
-  let l:regex = a:delim . '*\/' . a:delim . '*'
+  let l:regex = s:RegexEscape(a:delim) . '*\/' . s:RegexEscape(a:delim) . '*'
   let l:file = substitute(tolower(join(l:segments, a:delim)), l:regex, '/', 'g')
-  let l:file = substitute(l:file, '_\.' . l:fext . '$', '.' . l:fext, '')
-  if !s:app.ambiguous && l:file !~# '\.' . l:fext . '$'
+  let l:file = s:SanitizeFileName(l:file, a:delim)
+  let l:file = substitute(l:file, s:RegexEscape(a:delim) . '\+\.' . s:RegexEscape(l:fext) . '$', '.' . l:fext, '')
+  if !s:app.ambiguous && l:file !~# '\.' . s:RegexEscape(l:fext) . '$'
     let l:file .= '.' . l:fext
   endif
   if a:directory | let l:file = l:dir . l:file | endif
   return l:file
 endfunction
 
+function! s:GetTitle(file) abort
+  let l:file = substitute(a:file, '\s*/\s*', '/', 'g')
+  let l:title = trim(fnamemodify(l:file, ':t'))
+  let l:title = substitute(l:title, '\.' . s:RegexEscape(s:app.file_extension) . '$', '', '')
+  return substitute(l:title, s:RegexEscape(s:app.delimiter) . '\+', ' ', 'g')
+endfunction
+
+function! s:SanitizeFileName(file, delim) abort
+  let l:parts = split(a:file, '/', 1)
+  return join(map(l:parts, 's:SanitizeFilePart(v:val, a:delim)'), '/')
+endfunction
+
+function! s:SanitizeFilePart(file, delim) abort
+  let l:delim = s:RegexEscape(a:delim)
+  let l:file = substitute(a:file, '[^[:alnum:]_.-]\+', s:ReplacementEscape(a:delim), 'g')
+  let l:file = substitute(l:file, l:delim . '\+', s:ReplacementEscape(a:delim), 'g')
+  let l:file = substitute(l:file, '^' . l:delim . '\+\|' . l:delim . '\+$', '', 'g')
+  return l:file
+endfunction
+
+function! s:RegexEscape(string) abort
+  return escape(a:string, '\.^$~[]*')
+endfunction
+
+function! s:ReplacementEscape(string) abort
+  return escape(a:string, '\&')
+endfunction
+
 function! s:Header(title, file) abort
-  return '# ' . substitute(a:title, '\<.', '\u&', 'g')
+  return '# ' . substitute(a:title, '\(^\|\s\)\zs.', '\u&', 'g')
 endfunction
 
 function! s:Warn(message) abort

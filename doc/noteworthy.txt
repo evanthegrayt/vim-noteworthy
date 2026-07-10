@@ -141,12 +141,13 @@ To disable this behavior, set this in your vimrc.
 Setting a custom header~
 
 If you want to define your own header-making function, you can define a function
-called "NotewothyHeader" that takes two arguments -- "title" and "file" -- which
-will resolve to the base file name with any extension removed and underscores
+called "NoteworthyHeader" that takes two arguments -- "title" and "file" -- which
+will resolve to the note title with any extension removed and delimiters
 replaced by spaces, and the full file path to the current note, respectively. In
-other words, if the current library is "/Users/me/notes", and the note is
-"things_to_remember.md", then "title" would resolve to "things to remember", and
-"file" would resolve to "/Users/me/notes/things_to_remember.md".
+other words, if the current library is "/Users/me/notes", and you run
+":Note things_to_remember.md", then "title" would resolve to "things to
+remember", and "file" would resolve to
+"/Users/me/notes/things_to_remember.md".
 >
     function! NoteworthyHeader(title, file) abort
       return '# ' . toupper(a:title)
@@ -235,14 +236,16 @@ COMMANDS                                                   *noteworthy-commands*
                             |b:noteworthy_current_library|, or open it if it
                             already exists. If a buffer with that note already
                             exists, it will be reused. If it's already open in
-                            a window, focus will change to that window.The file
+                            a window, focus will change to that window. The file
                             extension can be omitted.  Can be multiple words
                             separated by spaces, which will be replaced by
-                            underscores in the file name.  If [{range}] is
-                            provided (works with visual selection), the lines
-                            of the current file will be appended to the note.
-                            By default, the copied text will be wrapped in a
-                            markdown code block. To disable this, see
+                            underscores in the file name. Special character
+                            runs will be replaced by the same delimiter. If
+                            [{range}] is provided (works with visual
+                            selection), the lines of the current file will be
+                            appended to the note. By default, the copied text
+                            will be wrapped in a markdown code block. To
+                            disable this, see
                             |g:noteworthy_use_code_block|.
 
                                                                         *:Snote*
